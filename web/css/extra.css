@@ -21,3 +21,10 @@
 	height: 60px;
 	line-height: 68px;
 }
+
+.android-search-box .mdl-textfield__input{
+	color: #fff;
+}
+.mdl-textfield__input{
+	border-bottom: 1px solid rgba(255,255,255,.12);
+}

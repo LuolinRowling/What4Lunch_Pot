@@ -121,10 +121,13 @@ a img{
     border-bottom: 4px solid transparent;
   }
 
-    .android-navigation .mdl-navigation__link:hover {
-      border-bottom: 4px solid #ffcc66;
-    }
+    /*.android-navigation .mdl-navigation__link:hover {
+      border-bottom: 4px solid #ffcc00;
+    }*/
 
+  .android-navigation .navigation-border{
+    border-bottom: 4px solid #ffcc00;
+  }
   .android-search-box {
     -webkit-order: 2;
         -ms-flex-order: 2;
