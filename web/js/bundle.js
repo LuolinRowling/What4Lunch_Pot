@@ -199,37 +199,17 @@ var option = {
 $(document).ready(function(){
 	$('#topics').addClass('navigation-border');
 	$('#anotherMe').css('display','none');
-    updateForceGraph("");
+    updateForceGraphForTopic("");
 });
-
-
-// function focus(param) {
-//     var data = param.data;
-//     var links = option.series[0].links;
-//     var nodes = option.series[0].nodes;
-//     if (
-//         data.source !== undefined
-//         && data.target !== undefined
-//     ) { //点击的是边
-//         var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
-//         var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
-//         // console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
-//     } else { // 点击的是点
-//         // console.log("选中了" + data.name + '(' + data.value + ')');
-//     }
-// }
-// myChart.on('click', focus);
-
-
 
 $('#search-field').keypress(function(e) {
 	if (e.which == 13) {
 		e.preventDefault();
-        updateForceGraph($(e.target).val());
+        updateForceGraphForTopic($(e.target).val());
 	}
 });
 
-function updateForceGraph(topic) {
+function updateForceGraphForTopic(topic) {
     console.log("Topic: " + topic);
     var data = {
         specificTopic: topic
@@ -269,7 +249,7 @@ function updateForceGraph(topic) {
 
                 console.log(nodes)
 
-                var link = [],
+                var links = [],
                     firstTopic = "",
                     secondTopic = "",
                     weightList = topics["EdgeWeight"];
@@ -282,19 +262,107 @@ function updateForceGraph(topic) {
                             target: secondTopic,
                             value: weightList[firstTopic][secondTopic] // value越大关系越近
                         }
-                        link.push(obj);
+                        links.push(obj);
                     }
                 }
 
                 // console.log(link);
                 option.series[0].nodes = nodes;
-                option.series[0].links = link;
-                console.log(option.series)
+                option.series[0].links = links;
+                // console.log(option.series)
                 myChart.setOption(option);
 
 
+
+                myChart.on('click', focus);
             }
 
+        },
+        error: function(xhr, type) {
+            console.log(xhr);
+        }
+    });
+}
+
+function focus(param) {
+    var data = param.data;
+    var links = option.series[0].links;
+    var nodes = option.series[0].nodes;
+    if (
+        data.source !== undefined
+        && data.target !== undefined
+    ) { //点击的是边
+
+    } else { // 点击的是点
+        console.log(data.name);
+        updateForceGraphForPerson(data.name);
+    }
+}
+
+function updateForceGraphForPerson(topic) {
+    var data = {
+        concreteTopic: topic
+    }
+    $.ajax({
+        type: 'POST',
+        url: 'http://jiangdongyu.space:3333/topicUser',
+        data: data,
+        dataType: 'json',
+        success: function(data){
+
+            var people = data,
+                nodes = [],
+                tempCount = 1;
+
+            var standardSize = 120,
+                userList = people["userlist"];
+
+            for (var index in userList) {
+                var obj = {
+                    category: tempCount % 5,
+                    name: userList[index]["author"],
+                    // symbolSize: standardSize * hotList[topic] / hotList[maxHot]
+                    symbolSize: standardSize - tempCount * 3
+                }
+                nodes.push(obj);
+                tempCount++;
+            }
+
+            console.log(nodes);
+            var links = [],
+                firstPerson = "",
+                secondPerson = "",
+                weightList = people["similarity"];
+
+            for (firstPerson in weightList) {
+                for (secondPerson in weightList[firstPerson]) {
+                    if (firstPerson == secondPerson) continue;
+                    var obj = {
+                        source: firstPerson,
+                        target: secondPerson,
+                        value: weightList[firstPerson][secondPerson] // value越大关系越近
+                    }
+                    links.push(obj);
+                }
+            }
+
+            console.log(links);
+            
+            option.title = {
+                show: true,
+                text: "Hot users in topic : " + data.name,
+                textAlign: "center",
+                textBaseline: "top",
+                left: "15%",
+                top: "10%",
+                textStyle: {
+                    fontSize: 26
+                }
+            }
+            option.series[0].nodes = nodes;
+            option.series[0].links = links;
+            // console.log(option.series)
+            myChart.setOption(option);
         },
         error: function(xhr, type) {
             console.log(xhr);
