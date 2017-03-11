@@ -360,3 +360,33 @@ h2 {
 p {
   margin: 0 0 16px;
 }
+
+.photo{
+  margin: 0 auto;
+  width: 70px;
+  height: 70px;
+  border-radius: 100%;
+  margin-bottom: 30px;
+  
+}
+#photo-ll{
+  background-image:url("../images/ll.png"); 
+  background-size: contain;
+}
+
+#photo-l{
+  background: url('../images/l.jpeg');
+  background-size: contain;
+}
+#photo-x{
+  background: url('../images/x.jpeg');
+  background-size: contain;
+}
+#photo-yyf{
+  background: url('../images/yyf.png');
+  background-size: contain;
+}
+#photo-s{
+  background: url('../images/s.jpeg');
+  background-size: contain;
+}
