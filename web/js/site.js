@@ -338,6 +338,7 @@
                         // $('#docs').find(">div").hide()
                         // $('#docs').find('#' + _path).show()
                         // document.title = "arbor.js » " + _path
+                        $('#danmu').danmu('danmu_start');
                         break
                 }
 
