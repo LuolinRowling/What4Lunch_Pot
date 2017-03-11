@@ -13,6 +13,7 @@ var data = {
 $.ajax({
     type: 'POST',
     url: 'http://jiangdongyu.space:3000/topicTOtopic',
+    data: 'data',
     dataType: 'json',
     success: function(data){
         console.log(data)

@@ -122,36 +122,33 @@
     <div class="topics-scroll">
         <span>I want to know something about&nbsp;</span>
         <div class="malarkey"></div>
+        <script src="http://dreamsky.github.io/main/blog/common/jquery.min.js"></script>
         <script src="js/malarkey.min.js"></script>
         <script>
             $.ajax({
-                type: 'POST',
-                url: 'http://localhost:8888/reboot',
+                type: 'GET',
+                url: 'http://jiangdongyu.space:3000/topicCloud',
                 dataType: 'json',
                 success: function(data){
-                    if (data.studentSuccess == false) {
-                        alert("学生重置失败");
-                    } else if (data.teacherSuccess == false) {
-                        alert("教师重置失败");
-                    } else {
-                        alert("重置成功，请手动删除对应Excel及图片");
+                    console.log(data)
+                    var elem = document.querySelector('.malarkey');
+                    var opts = {
+                        typeSpeed: 50,
+                        deleteSpeed: 50,
+                        pauseDelay: 1000,
+                        loop: true,
+                        postfix: ''
+                    };
+                    var m = malarkey(elem, opts);
+                    for (var index in data) {
+                        m.type(data[index]).pause().delete();
                     }
                 },
                 error: function(xhr, type){
                     console.log(xhr);
-                    alert('Ajax error!')
                 }
             });
-            var elem = document.querySelector('.malarkey');
-            var opts = {
-                typeSpeed: 50,
-                deleteSpeed: 50,
-                pauseDelay: 2000,
-                loop: true,
-                postfix: ''
-            };
-            malarkey(elem, opts).type('Say hello').pause().delete()
-                .type('Wave goodbye').pause().delete();
+
         </script>
     </div>
 
