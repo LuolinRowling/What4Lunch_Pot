@@ -64,7 +64,6 @@ body{
 }
 
 #arbor{
-  position:absolute;
   min-height:100%;
   min-width:100%;
 }
@@ -383,4 +382,8 @@ font-size:9px;
     color:#998;  
     border-top:1px solid #998;
     margin:60px 85px 0 0;  
+}
+
+#anotherMe{
+  position: relative;
 }

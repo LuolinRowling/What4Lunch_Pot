@@ -28,13 +28,11 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.min.css">
     <link rel="stylesheet" href="css/styles.css">
-    
     <!--animation-->
     <link rel="stylesheet" type="text/css" href="css/multilevelmenu.css" />
     <link rel="stylesheet" type="text/css" href="css/animations.css" />
     <link rel="stylesheet" type="text/css" href="css/component.css" />
     <link rel="stylesheet" type="text/css" href="css/extra.css" />
-
     <script src="js/modernizr.custom.js"></script>
     <link rel="stylesheet" href="http://dreamsky.github.io/main/blog/common/init.css">
     <script src="js/jquery.min.js"></script>
@@ -46,7 +44,6 @@
     } catch (e) {}
     </script>
     <link rel="stylesheet" href="css/site.css" type="text/css" charset="utf-8">
-
     <style>
     #view-source {
         position: fixed;
@@ -56,6 +53,12 @@
         margin-right: 40px;
         margin-bottom: 40px;
         z-index: 900;
+    }
+    
+    #scrollText {
+        width: 400px;
+        margin-right: auto;
+        margin-left: auto;
     }
     </style>
 </head>
@@ -91,23 +94,18 @@
                                     <a class="mdl-navigation__link mdl-typography--text-uppercase" id="about" href="about.html">About Us</a>
                                 </nav>
                             </div>
-
                         </div>
                     </div>
-                    <div class="android-content mdl-layout__content" >
-                      <div id="main" style="height:800px;width: 100%;text-align: center"></div>
-                      <div id="anotherMe">
-                        <div id="arbor">
-                          <canvas id="sitemap" width="800" height="400"></canvas>
-                          <div id="docs">
-                              <div id="reference">
-                                  
-                              </div>
-                          </div>
-                      </div>
-                      </div>
+                    <div class="android-content mdl-layout__content">
+                        <div id="main" style="height:800px;width: 100%;text-align: center"></div>
+                        <div id="anotherMe">
+                            <div id="arbor">
+                                <canvas id="sitemap" width="800" height="400"></canvas>
+                                
+                            </div>
+                            <div id="danmu"></div>
+                        </div>
                     </div>
-                    
                 </div>
             </div>
         </div>
@@ -123,6 +121,81 @@
         <script src="js/lib/arbor-tween.js"></script>
         <script src="js/lib/arbor-graphics.js"></script>
         <script src="js/site.js"></script>
+        <script type="text/javascript" src="js/jquery.danmu.js"></script>
+        <script type="text/javascript">
+        var CLR = ["#F24B4B","#F8BB44","#8C4B7E","#60BFBF","#244F75"];
+        var speed = [37,43,64,23,66,96,73,105,11,2];
+        
+        var textArr = ["lll","2222333","ssss","nihaobang","wozuimei"];
+        var danmuss = {};
+        for(var i = 0; i < speed.length; i++) {
+          danmuss[speed[i]] = [];
+        }
+        for (var i = textArr.length - 1; i >= 0; i--) {
+          var speedRand = speed[parseInt(10*Math.random())];
+          var colorRand = CLR[parseInt(10*Math.random())];
+          danmuss[speedRand].push({
+                "text": textArr[i],
+                "color": colorRand,
+                "size": "30",
+                "position": "0",
+                "time": i*10
+            });
+        };
+        /*
+        var danmuss = { speedRand:[]}
+        var danmuss = {
+            : [{
+                "text": "hahahaha",
+                "color": "red",
+                "size": "0",
+                "position": "0"
+            }, {
+                "text": "233333",
+                "color": "red",
+                "size": "0",
+                "position": "0"
+            }, {
+                "text": "455555",
+                "color": "red",
+                "size": "0",
+                "position": "0"
+            }],
+            3: [{
+                "text": "poi",
+                "color": "red",
+                "size": "1",
+                "position": "0"
+            }, {
+                "text": "2333",
+                "color": "#FFFFFF",
+                "size": "0",
+                "position": "0"
+            }],
+            50: [{
+                "text": "XXX真好",
+                "color": "#FFFFFF",
+                "size": "0",
+                "position": "2"
+            }, ]
+        };*/
+        $("#danmu").danmu({
+            left: 0, //区域的起始位置x坐标 
+            top: 490, //区域的起始位置y坐标 
+            height: 200, //区域的高度  
+            width: document.body.clientWidth,
+            zindex: 1003, //div的css样式zindex 
+            speed: 20000, //弹幕速度，飞过区域的毫秒数  
+            sumtime: 900, //弹幕运行总时间 
+            danmuss:danmuss , //danmuss对象，运行时的弹幕内容  
+            default_font_color: "#000", //弹幕默认字体颜色  
+            font_size_small: 30, //小号弹幕的字体大小,注意此属性值只能是整数 
+            font_size_big: 40, //大号弹幕的字体大小  
+            opacity: "0.9", //弹幕默认透明度  
+            top_botton_danmu_time: 6000 //顶端底端弹幕持续时间  
+        });
+        $('#danmu').danmu('danmu_start');
+        </script>
 </body>
 
 </html>

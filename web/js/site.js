@@ -302,6 +302,18 @@
                     dt = 0
                     dom.find('p').css('opacity', 0).show().fadeTo('slow', 1)
                 }
+                //get topic and name
+                var name = that.getQueryString("name");
+                var topic = that.getQueryString("topic");
+                if(name!=null&&topic!=null){
+                    console.log("2"+name+topic);
+
+                }
+                var index = _path.indexOf("?");
+                if(index!=-1){
+                    _path = _path.substr(0,index);
+                    console.log(_path);
+                }
 
                 switch (_path) {
                     case '':
@@ -318,18 +330,25 @@
 
                     case 'introduction':
                     case 'reference':
-                        $(that).trigger({ type: 'mode', mode: 'hidden', dt: dt })
-                        dom.find('> p').text(_path)
-                        dom.find('> a').addClass('active').attr('href', '#')
-                        $('#docs').stop(true).css({ opacity: 0 }).show().delay(333).fadeTo('fast', 1)
+                        // $(that).trigger({ type: 'mode', mode: 'hidden', dt: dt })
+                        // dom.find('> p').text(_path)
+                        // dom.find('> a').addClass('active').attr('href', '#')
+                        // $('#docs').stop(true).css({ opacity: 0 }).show().delay(333).fadeTo('fast', 1)
 
-                        $('#docs').find(">div").hide()
-                        $('#docs').find('#' + _path).show()
-                        document.title = "arbor.js » " + _path
+                        // $('#docs').find(">div").hide()
+                        // $('#docs').find('#' + _path).show()
+                        // document.title = "arbor.js » " + _path
                         break
                 }
 
-            }
+            },
+            getQueryString: function(name) { 
+                    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+                    var r = window.location.search.substr(1).match(reg); 
+                    if (r != null) return unescape(r[2]); 
+                    return null; 
+            
+            } 
         }
         return that
     }
@@ -357,7 +376,7 @@
                 echolalia: { color: CLR.purple, alpha: 0, link: '/echolalia' },
 
                 docs: { color: CLR.yellow, shape: "dot", alpha: 1 },
-                reference: { color: CLR.green, alpha: 0, link: '#reference' },
+                reference: { color: CLR.green, alpha: 0, link: "#reference?name="+CLR.code+"&topic="+CLR.code },
                 introduction: { color: CLR.green, alpha: 0, link: '#introduction' },
 
                 code: { color: CLR.yellow, shape: "dot", alpha: 1 },
