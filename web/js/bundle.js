@@ -1,31 +1,391 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports={
-    "Android": {
-        "Android": 1,
-        "web": 0.5,
-        "iphone": 0.9,
-        "linux": 0.6
-    },
-    "web": {
-        "web": 1,
-        "Android": 0.5,
-        "iphone": 0.4,
-        "linux": 0.7
-    },
-    "iphone": {
-        "iphone": 1,
-        "Android": 0.9,
-        "web": 0.4,
-        "linux": 0.8
-    },
-    "linux": {
-        "linux": 1,
-        "Android": 0.6,
-        "web": 0.7,
-        "iphone": 0.8
+var echarts = require('echarts');
+var topics = require('../mock.json');
+
+// 基于准备好的dom，初始化echarts实例
+var myChart = echarts.init(document.getElementById('main'));
+
+var nodes = [],
+    tempCount = 1;
+
+var standardSize = 120,
+    hotList = topics["SelfList"],
+    maxHot = Object.keys(hotList)[0];
+
+for (var topic in topics["SelfList"]) {
+    console.log(topic)
+    var obj = {
+        category: tempCount % 5,
+        name: topic,
+        // symbolSize: standardSize * hotList[topic] / hotList[maxHot]
+        symbolSize: standardSize - tempCount * 3
+    }
+    nodes.push(obj);
+    tempCount++;
+}
+
+console.log(nodes)
+
+var link = [],
+    firstTopic = "",
+    secondTopic = "",
+    weightList = topics["EdgeWeight"];
+
+for (firstTopic in weightList) {
+    for (secondTopic in weightList[firstTopic]) {
+        if (firstTopic == secondTopic) continue;
+        var obj = {
+            source: firstTopic,
+            target: secondTopic,
+            value: weightList[firstTopic][secondTopic] // value越大关系越近
+        }
+        link.push(obj);
     }
 }
-},{}],2:[function(require,module,exports){
+
+console.log(link);
+
+var option = {
+    // title : {
+    //     text: '人物关系：乔布斯',
+    //     subtext: '数据来自人立方',
+    //     x:'right',
+    //     y:'bottom'
+    // },
+    tooltip : {
+        trigger: 'item',
+        formatter: '{a} : {b}'
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            restore : {show: true},
+            magicType: {show: true, type: ['force', 'chord']},
+            saveAsImage : {show: true}
+        }
+    },
+    series : [
+        {
+            type:'graph',
+            layout: 'force',
+            name : "Topic",
+            draggable: true,
+            hoverAnimation: true,
+            focusNodeAdjacency: false,
+            categories : [
+                // {
+                //     name: 'blue',
+                //     itemStyle: {
+                //         normal: {
+                //             color: "#4285F4"
+                //         },
+                //         emphasis: {
+                //             borderColor: 'rgba(66, 133, 244, 0.6)',
+                //             borderWidth: 3,
+                //             borderType: "solid",
+                //             shadowColor: 'rgba(66, 133, 244, 0.9)',
+                //             shadowBlur: 10
+                //         }
+                //     }
+                // },
+                // {
+                //     name: 'green',
+                //     itemStyle: {
+                //         normal: {
+                //             color: "#34A853"
+                //         },
+                //         emphasis: {
+                //             borderColor: 'rgba(52, 168, 83, 0.6)',
+                //             borderWidth: 3,
+                //             borderType: "solid",
+                //             shadowColor: 'rgba(52, 168, 83, 0.9)',
+                //             shadowBlur: 10
+                //         }
+                //     }
+                // },
+                // {
+                //     name: 'yellow',
+                //     itemStyle: {
+                //         normal: {
+                //             color: "#FBBC05"
+                //         },
+                //         emphasis: {
+                //             borderColor: 'rgba(251, 188, 5, 0.6)',
+                //             borderWidth: 3,
+                //             borderType: "solid",
+                //             shadowColor: 'rgba(251, 188, 5, 0.9)',
+                //             shadowBlur: 10
+                //         }
+                //     }                    
+                // },
+                // {
+                //     name: 'red',
+                //     itemStyle: {
+                //         normal: {
+                //             color: "#EA4335"
+                //         },
+                //         emphasis: {
+                //             borderColor: 'rgba(203, 36, 49, 0.6)',
+                //             borderWidth: 3,
+                //             borderType: "solid",
+                //             shadowColor: 'rgba(203, 36, 49, 0.9)',
+                //             shadowBlur: 10
+                //         }
+                //     }                    
+                // }        
+                {
+                    name: 'one',
+                    itemStyle: {
+                        normal: {
+                            color: "rgba(36, 79, 117, 1)"
+                        },
+                        emphasis: {
+                            borderColor: 'rgba(36, 79, 117, 0.6)',
+                            borderWidth: 3,
+                            borderType: "solid",
+                            shadowColor: 'rgba(36, 79, 117, 0.9)',
+                            shadowBlur: 10
+                        }
+                    }                    
+                },
+                {
+                    name: 'two',
+                    itemStyle: {
+                        normal: {
+                            color: "rgba(96, 191, 191, 1)"
+                        },
+                        emphasis: {
+                            borderColor: 'rgba(96, 191, 191, 0.6)',
+                            borderWidth: 3,
+                            borderType: "solid",
+                            shadowColor: 'rgba(96, 191, 191, 0.9)',
+                            shadowBlur: 10
+                        }
+                    }                    
+                },
+                {
+                    name: 'three',
+                    itemStyle: {
+                        normal: {
+                            color: "rgba(140, 75, 126, 1)"
+                        },
+                        emphasis: {
+                            borderColor: 'rgba(140, 75, 126, 0.6)',
+                            borderWidth: 3,
+                            borderType: "solid",
+                            shadowColor: 'rgba(140, 75, 126, 0.9)',
+                            shadowBlur: 10
+                        }
+                    }                    
+                },
+                {
+                    name: 'four',
+                    itemStyle: {
+                        normal: {
+                            color: "rgba(248, 187, 68, 1)"
+                        },
+                        emphasis: {
+                            borderColor: 'rgba(248, 187, 68, 0.6)',
+                            borderWidth: 3,
+                            borderType: "solid",
+                            shadowColor: 'rgba(248, 187, 68, 0.9)',
+                            shadowBlur: 10
+                        }
+                    }                    
+                },
+                {
+                    name: 'five',
+                    itemStyle: {
+                        normal: {
+                            color: "rgba(242, 75, 75, 1)"
+                        },
+                        emphasis: {
+                            borderColor: 'rgba(242, 75, 75, 0.6)',
+                            borderWidth: 3,
+                            borderType: "solid",
+                            shadowColor: 'rgba(242, 75, 75, 0.9)',
+                            shadowBlur: 10
+                        }
+                    }                    
+                }
+
+            ],
+            legendHoverLink: true,
+            force: {
+                repulsion: [70, 100],
+                edgeLength: [250, 400],
+                gravity: 0.1,
+                layoutAnimation: true
+            },
+            symbolSize: 50,
+            itemStyle: {
+                normal: {
+
+                },
+                emphasis: {
+                    label: {
+                        // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
+                    },
+                    nodeStyle : {
+                        r: 100
+                    },
+                    linkStyle : {}
+                }
+            },
+            lineStyle: {
+                normal: {
+                    curveness: 0,
+                    width: 2,
+                    opacity: 0.5
+                },
+                emphasis: {
+                    curveneww: 0,
+                    width: 2,
+                    opacity: 0.5
+                }
+            },
+            label: {
+                normal: {
+                    show: true,
+                    textStyle: {
+                        color: '#ffffff',
+                        fontSize: 20,
+                        fontWeight: 'bold'
+                    }
+                },
+                emphasis: {
+                    show: true,
+                    textStyle: {
+                        color: '#ffffff',
+                        fontSize: 20,
+                        fontWeight: 'bold'
+                    }
+                }
+            },
+            // animationDuration: 20000,
+            // animationDurationUpdate: 5000,
+            // animationEasing: "qunitiInOut",
+
+            // scaling: 1.1,
+            roam: 'move',
+            nodes: nodes,
+            links : link,
+
+        }
+    ],
+    animationDuration: function (idx) {
+        return idx * 200;
+    },
+    animationDurationUpdate: function (idx) {
+        return idx * 15;
+    },
+    animationEasing: "qunitiInOut",
+    animationDelay: function (idx) {
+        return idx * 15;
+    },
+    animationDelayUpdate: function (idx) {
+        return idx * 15;
+    },
+};
+
+
+// var canvas = document.getElementById("main"),
+//     ctx = canvas.getContext("2d"),
+//     pic = new Image();
+
+//     pic.src = "./bg.jpg";
+
+//     ctx.drawImage(pic, 0, 0);
+
+
+myChart.setOption(option);
+
+//var ecConfig = require('echarts/config');
+function focus(param) {
+    var data = param.data;
+    var links = option.series[0].links;
+    var nodes = option.series[0].nodes;
+    if (
+        data.source !== undefined
+        && data.target !== undefined
+    ) { //点击的是边
+        var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
+        var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
+        console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
+    } else { // 点击的是点
+        console.log("选中了" + data.name + '(' + data.value + ')');
+    }
+}
+myChart.on('click', focus)
+
+// myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
+//     console.log(myChart.chart.force.getPosition());
+// });
+
+
+                    
+// // 绘制图表
+// myChart.setOption({
+//     title: { text: 'ECharts 入门示例' },
+//     tooltip: {},
+//     xAxis: {
+//         data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+//     },
+//     yAxis: {},
+//     series: [{
+//         name: '销量',
+//         type: 'bar',
+//         data: [5, 20, 36, 10, 10, 20]
+//     }]
+// });
+},{"../mock.json":2,"echarts":3}],2:[function(require,module,exports){
+module.exports={
+    "SelfList": {
+        "Android": 3,
+        "web": 2,
+        "js": 0.6,
+        "java": 0.8,
+        "iphone": 0.5,
+        "linux": 0.2
+    },
+    "EdgeWeight": {
+        "Android": {
+            "Android": 1,
+            "web": 0.5,
+            "iphone": 0.9,
+            "linux": 0.6,
+            "java": 0.7
+        },
+        "web": {
+            "web": 1,
+            "Android": 0.5,
+            "iphone": 0.4,
+            "linux": 0.7,
+            "js": 0.9
+        },
+        "iphone": {
+            "iphone": 1,
+            "Android": 0.9,
+            "web": 0.4,
+            "linux": 0.8
+        },
+        "linux": {
+            "linux": 1,
+            "Android": 0.6,
+            "web": 0.7,
+            "iphone": 0.8
+        },
+        "js": {
+            "java": 0.1,
+            "linux": 0.1,
+            "web": 0.9
+        }
+        
+    }
+
+
+}
+},{}],3:[function(require,module,exports){
 /**
  * Export echarts as CommonJS module
  */
@@ -77,7 +437,7 @@ require('./lib/component/toolbox');
 
 require('zrender/lib/vml/vml');
 
-},{"./lib/chart/bar":8,"./lib/chart/boxplot":16,"./lib/chart/candlestick":21,"./lib/chart/effectScatter":27,"./lib/chart/funnel":30,"./lib/chart/gauge":34,"./lib/chart/graph":38,"./lib/chart/heatmap":54,"./lib/chart/line":73,"./lib/chart/lines":78,"./lib/chart/map":83,"./lib/chart/parallel":90,"./lib/chart/pictorialBar":94,"./lib/chart/pie":95,"./lib/chart/radar":100,"./lib/chart/sankey":105,"./lib/chart/scatter":110,"./lib/chart/themeRiver":113,"./lib/chart/treemap":118,"./lib/component/brush":135,"./lib/component/dataZoom":142,"./lib/component/geo":159,"./lib/component/graphic":161,"./lib/component/grid":162,"./lib/component/legend":171,"./lib/component/markArea":176,"./lib/component/markLine":177,"./lib/component/markPoint":178,"./lib/component/parallel":188,"./lib/component/polar":190,"./lib/component/singleAxis":194,"./lib/component/timeline":195,"./lib/component/title":204,"./lib/component/toolbox":205,"./lib/component/tooltip":215,"./lib/component/visualMap":219,"./lib/echarts":279,"zrender/lib/vml/vml":394}],3:[function(require,module,exports){
+},{"./lib/chart/bar":9,"./lib/chart/boxplot":17,"./lib/chart/candlestick":22,"./lib/chart/effectScatter":28,"./lib/chart/funnel":31,"./lib/chart/gauge":35,"./lib/chart/graph":39,"./lib/chart/heatmap":55,"./lib/chart/line":74,"./lib/chart/lines":79,"./lib/chart/map":84,"./lib/chart/parallel":91,"./lib/chart/pictorialBar":95,"./lib/chart/pie":96,"./lib/chart/radar":101,"./lib/chart/sankey":106,"./lib/chart/scatter":111,"./lib/chart/themeRiver":114,"./lib/chart/treemap":119,"./lib/component/brush":136,"./lib/component/dataZoom":143,"./lib/component/geo":160,"./lib/component/graphic":162,"./lib/component/grid":163,"./lib/component/legend":172,"./lib/component/markArea":177,"./lib/component/markLine":178,"./lib/component/markPoint":179,"./lib/component/parallel":189,"./lib/component/polar":191,"./lib/component/singleAxis":195,"./lib/component/timeline":196,"./lib/component/title":205,"./lib/component/toolbox":206,"./lib/component/tooltip":216,"./lib/component/visualMap":220,"./lib/echarts":280,"zrender/lib/vml/vml":395}],4:[function(require,module,exports){
 'use strict';
 
 
@@ -154,7 +514,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = CoordinateSystemManager;
 
-},{"zrender/lib/core/util":357}],4:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],5:[function(require,module,exports){
 'use strict';
 
 
@@ -173,7 +533,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = ExtensionAPI;
 
-},{"zrender/lib/core/util":357}],5:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],6:[function(require,module,exports){
 
     var echarts = require('../echarts');
     var zrUtil = require('zrender/lib/core/util');
@@ -209,7 +569,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"../echarts":279,"zrender/lib/core/util":357}],6:[function(require,module,exports){
+},{"../echarts":280,"zrender/lib/core/util":358}],7:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -263,7 +623,7 @@ require('zrender/lib/vml/vml');
         );
     });
 
-},{"../echarts":279,"./roamHelper":7,"zrender/lib/core/util":357}],7:[function(require,module,exports){
+},{"../echarts":280,"./roamHelper":8,"zrender/lib/core/util":358}],8:[function(require,module,exports){
 
 
     var roamHelper = {};
@@ -324,7 +684,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = roamHelper;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -349,7 +709,7 @@ require('zrender/lib/vml/vml');
     // In case developer forget to include grid component
     require('../component/grid');
 
-},{"../component/grid":162,"../coord/cartesian/Grid":243,"../echarts":279,"../layout/barGrid":280,"./bar/BarSeries":9,"./bar/BarView":10,"zrender/lib/core/util":357}],9:[function(require,module,exports){
+},{"../component/grid":163,"../coord/cartesian/Grid":244,"../echarts":280,"../layout/barGrid":281,"./bar/BarSeries":10,"./bar/BarView":11,"zrender/lib/core/util":358}],10:[function(require,module,exports){
 
 
     module.exports = require('./BaseBarSeries').extend({
@@ -361,7 +721,7 @@ require('zrender/lib/vml/vml');
         brushSelector: 'rect'
     });
 
-},{"./BaseBarSeries":11}],10:[function(require,module,exports){
+},{"./BaseBarSeries":12}],11:[function(require,module,exports){
 'use strict';
 
 
@@ -545,7 +905,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = BarView;
 
-},{"../../echarts":279,"../../model/Model":285,"../../util/graphic":310,"./barItemStyle":14,"./helper":15,"zrender/lib/core/util":357}],11:[function(require,module,exports){
+},{"../../echarts":280,"../../model/Model":286,"../../util/graphic":311,"./barItemStyle":15,"./helper":16,"zrender/lib/core/util":358}],12:[function(require,module,exports){
 'use strict';
 
 
@@ -616,7 +976,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../model/Series":287,"../helper/createListFromArray":71}],12:[function(require,module,exports){
+},{"../../model/Series":288,"../helper/createListFromArray":72}],13:[function(require,module,exports){
 
 
     var PictorialBarSeries = require('./BaseBarSeries').extend({
@@ -662,7 +1022,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = PictorialBarSeries;
 
-},{"./BaseBarSeries":11}],13:[function(require,module,exports){
+},{"./BaseBarSeries":12}],14:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -1416,7 +1776,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = BarView;
 
-},{"../../echarts":279,"../../util/graphic":310,"../../util/number":313,"../../util/symbol":314,"./helper":15,"zrender/lib/core/util":357}],14:[function(require,module,exports){
+},{"../../echarts":280,"../../util/graphic":311,"../../util/number":314,"../../util/symbol":315,"./helper":16,"zrender/lib/core/util":358}],15:[function(require,module,exports){
 
 
 
@@ -1446,7 +1806,7 @@ require('zrender/lib/vml/vml');
         }
     };
 
-},{"../../model/mixin/makeStyleMapper":294}],15:[function(require,module,exports){
+},{"../../model/mixin/makeStyleMapper":295}],16:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -1499,7 +1859,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = helper;
 
-},{"../../util/graphic":310,"zrender/lib/core/util":357}],16:[function(require,module,exports){
+},{"../../util/graphic":311,"zrender/lib/core/util":358}],17:[function(require,module,exports){
 
 
     var echarts = require('../echarts');
@@ -1511,7 +1871,7 @@ require('zrender/lib/vml/vml');
     echarts.registerLayout(require('./boxplot/boxplotLayout'));
 
 
-},{"../echarts":279,"./boxplot/BoxplotSeries":17,"./boxplot/BoxplotView":18,"./boxplot/boxplotLayout":19,"./boxplot/boxplotVisual":20}],17:[function(require,module,exports){
+},{"../echarts":280,"./boxplot/BoxplotSeries":18,"./boxplot/BoxplotView":19,"./boxplot/boxplotLayout":20,"./boxplot/boxplotVisual":21}],18:[function(require,module,exports){
 'use strict';
 
 
@@ -1583,7 +1943,7 @@ require('zrender/lib/vml/vml');
     module.exports = BoxplotSeries;
 
 
-},{"../../model/Series":287,"../helper/whiskerBoxCommon":72,"zrender/lib/core/util":357}],18:[function(require,module,exports){
+},{"../../model/Series":288,"../helper/whiskerBoxCommon":73,"zrender/lib/core/util":358}],19:[function(require,module,exports){
 'use strict';
 
 
@@ -1634,7 +1994,7 @@ require('zrender/lib/vml/vml');
     module.exports = BoxplotView;
 
 
-},{"../../util/graphic":310,"../../view/Chart":316,"../helper/whiskerBoxCommon":72,"zrender/lib/core/util":357}],19:[function(require,module,exports){
+},{"../../util/graphic":311,"../../view/Chart":317,"../helper/whiskerBoxCommon":73,"zrender/lib/core/util":358}],20:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -1816,7 +2176,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../util/number":313,"zrender/lib/core/util":357}],20:[function(require,module,exports){
+},{"../../util/number":314,"zrender/lib/core/util":358}],21:[function(require,module,exports){
 
 
     var borderColorQuery = ['itemStyle', 'normal', 'borderColor'];
@@ -1851,7 +2211,7 @@ require('zrender/lib/vml/vml');
 
     };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 
 
     var echarts = require('../echarts');
@@ -1867,7 +2227,7 @@ require('zrender/lib/vml/vml');
     echarts.registerLayout(require('./candlestick/candlestickLayout'));
 
 
-},{"../echarts":279,"./candlestick/CandlestickSeries":22,"./candlestick/CandlestickView":23,"./candlestick/candlestickLayout":24,"./candlestick/candlestickVisual":25,"./candlestick/preprocessor":26}],22:[function(require,module,exports){
+},{"../echarts":280,"./candlestick/CandlestickSeries":23,"./candlestick/CandlestickView":24,"./candlestick/candlestickLayout":25,"./candlestick/candlestickVisual":26,"./candlestick/preprocessor":27}],23:[function(require,module,exports){
 'use strict';
 
 
@@ -1971,7 +2331,7 @@ require('zrender/lib/vml/vml');
     module.exports = CandlestickSeries;
 
 
-},{"../../model/Series":287,"../../util/format":309,"../helper/whiskerBoxCommon":72,"zrender/lib/core/util":357}],23:[function(require,module,exports){
+},{"../../model/Series":288,"../../util/format":310,"../helper/whiskerBoxCommon":73,"zrender/lib/core/util":358}],24:[function(require,module,exports){
 'use strict';
 
 
@@ -2026,7 +2386,7 @@ require('zrender/lib/vml/vml');
     module.exports = CandlestickView;
 
 
-},{"../../util/graphic":310,"../../view/Chart":316,"../helper/whiskerBoxCommon":72,"zrender/lib/core/util":357}],24:[function(require,module,exports){
+},{"../../util/graphic":311,"../../view/Chart":317,"../helper/whiskerBoxCommon":73,"zrender/lib/core/util":358}],25:[function(require,module,exports){
 
 
     var retrieve = require('zrender/lib/core/util').retrieve;
@@ -2148,7 +2508,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../util/number":313,"zrender/lib/core/util":357}],25:[function(require,module,exports){
+},{"../../util/number":314,"zrender/lib/core/util":358}],26:[function(require,module,exports){
 
 
     var positiveBorderColorQuery = ['itemStyle', 'normal', 'borderColor'];
@@ -2189,7 +2549,7 @@ require('zrender/lib/vml/vml');
 
     };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -2208,7 +2568,7 @@ require('zrender/lib/vml/vml');
     };
 
 
-},{"zrender/lib/core/util":357}],27:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],28:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -2224,7 +2584,7 @@ require('zrender/lib/vml/vml');
         require('../layout/points'), 'effectScatter'
     ));
 
-},{"../echarts":279,"../layout/points":281,"../visual/symbol":321,"./effectScatter/EffectScatterSeries":28,"./effectScatter/EffectScatterView":29,"zrender/lib/core/util":357}],28:[function(require,module,exports){
+},{"../echarts":280,"../layout/points":282,"../visual/symbol":322,"./effectScatter/EffectScatterSeries":29,"./effectScatter/EffectScatterView":30,"zrender/lib/core/util":358}],29:[function(require,module,exports){
 'use strict';
 
 
@@ -2293,7 +2653,7 @@ require('zrender/lib/vml/vml');
 
     });
 
-},{"../../model/Series":287,"../helper/createListFromArray":71}],29:[function(require,module,exports){
+},{"../../model/Series":288,"../helper/createListFromArray":72}],30:[function(require,module,exports){
 
 
     var SymbolDraw = require('../helper/SymbolDraw');
@@ -2325,7 +2685,7 @@ require('zrender/lib/vml/vml');
         dispose: function () {}
     });
 
-},{"../../echarts":279,"../helper/EffectSymbol":60,"../helper/SymbolDraw":68}],30:[function(require,module,exports){
+},{"../../echarts":280,"../helper/EffectSymbol":61,"../helper/SymbolDraw":69}],31:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -2339,7 +2699,7 @@ require('zrender/lib/vml/vml');
 
     echarts.registerProcessor(zrUtil.curry(require('../processor/dataFilter'), 'funnel'));
 
-},{"../echarts":279,"../processor/dataFilter":298,"../visual/dataColor":319,"./funnel/FunnelSeries":31,"./funnel/FunnelView":32,"./funnel/funnelLayout":33,"zrender/lib/core/util":357}],31:[function(require,module,exports){
+},{"../echarts":280,"../processor/dataFilter":299,"../visual/dataColor":320,"./funnel/FunnelSeries":32,"./funnel/FunnelView":33,"./funnel/funnelLayout":34,"zrender/lib/core/util":358}],32:[function(require,module,exports){
 'use strict';
 
 
@@ -2440,7 +2800,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = FunnelSeries;
 
-},{"../../data/List":275,"../../data/helper/completeDimensions":277,"../../echarts":279,"../../util/model":312}],32:[function(require,module,exports){
+},{"../../data/List":276,"../../data/helper/completeDimensions":278,"../../echarts":280,"../../util/model":313}],33:[function(require,module,exports){
 
 
     var graphic = require('../../util/graphic');
@@ -2657,7 +3017,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Funnel;
 
-},{"../../util/graphic":310,"../../view/Chart":316,"zrender/lib/core/util":357}],33:[function(require,module,exports){
+},{"../../util/graphic":311,"../../view/Chart":317,"zrender/lib/core/util":358}],34:[function(require,module,exports){
 
 
     var layout = require('../../util/layout');
@@ -2828,12 +3188,12 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"../../util/layout":311,"../../util/number":313}],34:[function(require,module,exports){
+},{"../../util/layout":312,"../../util/number":314}],35:[function(require,module,exports){
 
     require('./gauge/GaugeSeries');
     require('./gauge/GaugeView');
 
-},{"./gauge/GaugeSeries":35,"./gauge/GaugeView":36}],35:[function(require,module,exports){
+},{"./gauge/GaugeSeries":36,"./gauge/GaugeView":37}],36:[function(require,module,exports){
 
 
     var List = require('../../data/List');
@@ -2957,7 +3317,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = GaugeSeries;
 
-},{"../../data/List":275,"../../model/Series":287,"zrender/lib/core/util":357}],36:[function(require,module,exports){
+},{"../../data/List":276,"../../model/Series":288,"zrender/lib/core/util":358}],37:[function(require,module,exports){
 
 
     var PointerPath = require('./PointerPath');
@@ -3376,7 +3736,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = GaugeView;
 
-},{"../../util/graphic":310,"../../util/number":313,"../../view/Chart":316,"./PointerPath":37}],37:[function(require,module,exports){
+},{"../../util/graphic":311,"../../util/number":314,"../../view/Chart":317,"./PointerPath":38}],38:[function(require,module,exports){
 
 
     module.exports = require('zrender/lib/graphic/Path').extend({
@@ -3424,7 +3784,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"zrender/lib/graphic/Path":365}],38:[function(require,module,exports){
+},{"zrender/lib/graphic/Path":366}],39:[function(require,module,exports){
 
 
     var echarts = require('../echarts');
@@ -3452,7 +3812,7 @@ require('zrender/lib/vml/vml');
         create: require('./graph/createView')
     });
 
-},{"../echarts":279,"../visual/symbol":321,"./graph/GraphSeries":39,"./graph/GraphView":40,"./graph/categoryFilter":42,"./graph/categoryVisual":43,"./graph/circularLayout":44,"./graph/createView":46,"./graph/edgeVisual":47,"./graph/forceLayout":49,"./graph/graphAction":50,"./graph/simpleLayout":51,"zrender/lib/core/util":357}],39:[function(require,module,exports){
+},{"../echarts":280,"../visual/symbol":322,"./graph/GraphSeries":40,"./graph/GraphView":41,"./graph/categoryFilter":43,"./graph/categoryVisual":44,"./graph/circularLayout":45,"./graph/createView":47,"./graph/edgeVisual":48,"./graph/forceLayout":50,"./graph/graphAction":51,"./graph/simpleLayout":52,"zrender/lib/core/util":358}],40:[function(require,module,exports){
 'use strict';
 
 
@@ -3722,7 +4082,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = GraphSeries;
 
-},{"../../data/List":275,"../../echarts":279,"../../model/Model":285,"../../util/format":309,"../../util/model":312,"../helper/createGraphFromNodeEdge":70,"zrender/lib/core/util":357}],40:[function(require,module,exports){
+},{"../../data/List":276,"../../echarts":280,"../../model/Model":286,"../../util/format":310,"../../util/model":313,"../helper/createGraphFromNodeEdge":71,"zrender/lib/core/util":358}],41:[function(require,module,exports){
 
 
 
@@ -4065,7 +4425,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../component/helper/RoamController":165,"../../echarts":279,"../../util/graphic":310,"../helper/LineDraw":64,"../helper/SymbolDraw":68,"./adjustEdge":41,"zrender/lib/core/util":357}],41:[function(require,module,exports){
+},{"../../component/helper/RoamController":166,"../../echarts":280,"../../util/graphic":311,"../helper/LineDraw":65,"../helper/SymbolDraw":69,"./adjustEdge":42,"zrender/lib/core/util":358}],42:[function(require,module,exports){
 
 
     var curveTool = require('zrender/lib/core/curve');
@@ -4227,7 +4587,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"zrender/lib/core/curve":350,"zrender/lib/core/vector":358}],42:[function(require,module,exports){
+},{"zrender/lib/core/curve":351,"zrender/lib/core/vector":359}],43:[function(require,module,exports){
 
 
     module.exports = function (ecModel) {
@@ -4263,7 +4623,7 @@ require('zrender/lib/vml/vml');
         }, this);
     };
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 
 
     module.exports = function (ecModel) {
@@ -4306,7 +4666,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 
     var circularLayoutHelper = require('./circularLayoutHelper');
     module.exports = function (ecModel) {
@@ -4317,7 +4677,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"./circularLayoutHelper":45}],45:[function(require,module,exports){
+},{"./circularLayoutHelper":46}],46:[function(require,module,exports){
 
     var vec2 = require('zrender/lib/core/vector');
     module.exports = function (seriesModel) {
@@ -4376,7 +4736,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"zrender/lib/core/vector":358}],46:[function(require,module,exports){
+},{"zrender/lib/core/vector":359}],47:[function(require,module,exports){
 
     // FIXME Where to create the simple view coordinate system
     var View = require('../../coord/View');
@@ -4453,7 +4813,7 @@ require('zrender/lib/vml/vml');
         return viewList;
     };
 
-},{"../../coord/View":234,"../../util/layout":311,"zrender/lib/core/bbox":349}],47:[function(require,module,exports){
+},{"../../coord/View":235,"../../util/layout":312,"zrender/lib/core/bbox":350}],48:[function(require,module,exports){
 
 
     function normalize(a) {
@@ -4507,7 +4867,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 
 
     var vec2 = require('zrender/lib/core/vector');
@@ -4645,7 +5005,7 @@ require('zrender/lib/vml/vml');
         };
     };
 
-},{"zrender/lib/core/vector":358}],49:[function(require,module,exports){
+},{"zrender/lib/core/vector":359}],50:[function(require,module,exports){
 
 
     var forceHelper = require('./forceHelper');
@@ -4780,7 +5140,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"../../util/number":313,"./circularLayoutHelper":45,"./forceHelper":48,"./simpleLayoutHelper":53,"zrender/lib/core/util":357,"zrender/lib/core/vector":358}],50:[function(require,module,exports){
+},{"../../util/number":314,"./circularLayoutHelper":46,"./forceHelper":49,"./simpleLayoutHelper":54,"zrender/lib/core/util":358,"zrender/lib/core/vector":359}],51:[function(require,module,exports){
 
 
     var echarts = require('../../echarts');
@@ -4842,7 +5202,7 @@ require('zrender/lib/vml/vml');
     }, function () {});
 
 
-},{"../../action/roamHelper":7,"../../echarts":279}],51:[function(require,module,exports){
+},{"../../action/roamHelper":8,"../../echarts":280}],52:[function(require,module,exports){
 
 
     var simpleLayoutHelper = require('./simpleLayoutHelper');
@@ -4871,7 +5231,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"./simpleLayoutEdge":52,"./simpleLayoutHelper":53}],52:[function(require,module,exports){
+},{"./simpleLayoutEdge":53,"./simpleLayoutHelper":54}],53:[function(require,module,exports){
 
     var vec2 = require('zrender/lib/core/vector');
     module.exports = function (graph) {
@@ -4890,7 +5250,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"zrender/lib/core/vector":358}],53:[function(require,module,exports){
+},{"zrender/lib/core/vector":359}],54:[function(require,module,exports){
 
 
     var simpleLayoutEdge = require('./simpleLayoutEdge');
@@ -4910,13 +5270,13 @@ require('zrender/lib/vml/vml');
         simpleLayoutEdge(graph);
     };
 
-},{"./simpleLayoutEdge":52}],54:[function(require,module,exports){
+},{"./simpleLayoutEdge":53}],55:[function(require,module,exports){
 
 
     require('./heatmap/HeatmapSeries');
     require('./heatmap/HeatmapView');
 
-},{"./heatmap/HeatmapSeries":56,"./heatmap/HeatmapView":57}],55:[function(require,module,exports){
+},{"./heatmap/HeatmapSeries":57,"./heatmap/HeatmapView":58}],56:[function(require,module,exports){
 /**
  * @file defines echarts Heatmap Chart
  * @author Ovilia (me@zhangwenli.com)
@@ -5066,7 +5426,7 @@ require('zrender/lib/vml/vml');
     module.exports = Heatmap;
 
 
-},{"zrender/lib/core/util":357}],56:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],57:[function(require,module,exports){
 
 
     var SeriesModel = require('../../model/Series');
@@ -5105,7 +5465,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../model/Series":287,"../helper/createListFromArray":71}],57:[function(require,module,exports){
+},{"../../model/Series":288,"../helper/createListFromArray":72}],58:[function(require,module,exports){
 
 
     var graphic = require('../../util/graphic');
@@ -5339,7 +5699,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../echarts":279,"../../util/graphic":310,"./HeatmapLayer":55,"zrender/lib/core/util":357}],58:[function(require,module,exports){
+},{"../../echarts":280,"../../util/graphic":311,"./HeatmapLayer":56,"zrender/lib/core/util":358}],59:[function(require,module,exports){
 /**
  * Provide effect for line
  * @module echarts/chart/helper/EffectLine
@@ -5528,7 +5888,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = EffectLine;
 
-},{"../../util/graphic":310,"../../util/symbol":314,"./Line":63,"zrender/lib/core/curve":350,"zrender/lib/core/util":357,"zrender/lib/core/vector":358}],59:[function(require,module,exports){
+},{"../../util/graphic":311,"../../util/symbol":315,"./Line":64,"zrender/lib/core/curve":351,"zrender/lib/core/util":358,"zrender/lib/core/vector":359}],60:[function(require,module,exports){
 /**
  * Provide effect for line
  * @module echarts/chart/helper/EffectLine
@@ -5640,7 +6000,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = EffectPolyline;
 
-},{"./EffectLine":58,"./Polyline":66,"zrender/lib/core/util":357,"zrender/lib/core/vector":358}],60:[function(require,module,exports){
+},{"./EffectLine":59,"./Polyline":67,"zrender/lib/core/util":358,"zrender/lib/core/vector":359}],61:[function(require,module,exports){
 /**
  * Symbol with ripple effect
  * @module echarts/chart/helper/EffectSymbol
@@ -5870,7 +6230,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = EffectSymbol;
 
-},{"../../util/graphic":310,"../../util/number":313,"../../util/symbol":314,"./Symbol":67,"zrender/lib/core/util":357}],61:[function(require,module,exports){
+},{"../../util/graphic":311,"../../util/number":314,"../../util/symbol":315,"./Symbol":68,"zrender/lib/core/util":358}],62:[function(require,module,exports){
 // TODO Batch by color
 
 
@@ -6014,7 +6374,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = LargeLineDraw;
 
-},{"../../util/graphic":310,"zrender/lib/contain/line":337,"zrender/lib/contain/quadratic":340}],62:[function(require,module,exports){
+},{"../../util/graphic":311,"zrender/lib/contain/line":338,"zrender/lib/contain/quadratic":341}],63:[function(require,module,exports){
 // TODO Batch by color
 
 
@@ -6161,7 +6521,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = LargeSymbolDraw;
 
-},{"../../util/graphic":310,"../../util/symbol":314}],63:[function(require,module,exports){
+},{"../../util/graphic":311,"../../util/symbol":315}],64:[function(require,module,exports){
 /**
  * @module echarts/chart/helper/Line
  */
@@ -6529,7 +6889,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Line;
 
-},{"../../util/graphic":310,"../../util/number":313,"../../util/symbol":314,"./LinePath":65,"zrender/lib/core/util":357,"zrender/lib/core/vector":358}],64:[function(require,module,exports){
+},{"../../util/graphic":311,"../../util/number":314,"../../util/symbol":315,"./LinePath":66,"zrender/lib/core/util":358,"zrender/lib/core/vector":359}],65:[function(require,module,exports){
 /**
  * @module echarts/chart/helper/LineDraw
  */
@@ -6624,7 +6984,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = LineDraw;
 
-},{"../../util/graphic":310,"./Line":63}],65:[function(require,module,exports){
+},{"../../util/graphic":311,"./Line":64}],66:[function(require,module,exports){
 /**
  * Line path for bezier and straight line draw
  */
@@ -6677,7 +7037,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../util/graphic":310,"zrender/lib/core/vector":358}],66:[function(require,module,exports){
+},{"../../util/graphic":311,"zrender/lib/core/vector":359}],67:[function(require,module,exports){
 /**
  * @module echarts/chart/helper/Line
  */
@@ -6763,7 +7123,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Polyline;
 
-},{"../../util/graphic":310,"zrender/lib/core/util":357}],67:[function(require,module,exports){
+},{"../../util/graphic":311,"zrender/lib/core/util":358}],68:[function(require,module,exports){
 /**
  * @module echarts/chart/helper/Symbol
  */
@@ -7063,7 +7423,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Symbol;
 
-},{"../../util/graphic":310,"../../util/number":313,"../../util/symbol":314,"zrender/lib/core/util":357}],68:[function(require,module,exports){
+},{"../../util/graphic":311,"../../util/number":314,"../../util/symbol":315,"zrender/lib/core/util":358}],69:[function(require,module,exports){
 /**
  * @module echarts/chart/helper/SymbolDraw
  */
@@ -7191,7 +7551,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = SymbolDraw;
 
-},{"../../util/graphic":310,"./Symbol":67}],69:[function(require,module,exports){
+},{"../../util/graphic":311,"./Symbol":68}],70:[function(require,module,exports){
 /**
  * @module echarts/chart/helper/Symbol
  */
@@ -7407,7 +7767,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = WhiskerBoxDraw;
 
-},{"../../util/graphic":310,"zrender/lib/core/util":357,"zrender/lib/graphic/Path":365}],70:[function(require,module,exports){
+},{"../../util/graphic":311,"zrender/lib/core/util":358,"zrender/lib/graphic/Path":366}],71:[function(require,module,exports){
 
 
     var List = require('../../data/List');
@@ -7478,7 +7838,7 @@ require('zrender/lib/vml/vml');
         return graph;
     };
 
-},{"../../CoordinateSystem":3,"../../data/Graph":274,"../../data/List":275,"../../data/helper/completeDimensions":277,"../../data/helper/linkList":278,"./createListFromArray":71,"zrender/lib/core/util":357}],71:[function(require,module,exports){
+},{"../../CoordinateSystem":4,"../../data/Graph":275,"../../data/List":276,"../../data/helper/completeDimensions":278,"../../data/helper/linkList":279,"./createListFromArray":72,"zrender/lib/core/util":358}],72:[function(require,module,exports){
 'use strict';
 
 
@@ -7797,7 +8157,7 @@ require('zrender/lib/vml/vml');
     module.exports = createListFromArray;
 
 
-},{"../../CoordinateSystem":3,"../../data/List":275,"../../data/helper/completeDimensions":277,"../../util/model":312,"zrender/lib/core/util":357}],72:[function(require,module,exports){
+},{"../../CoordinateSystem":4,"../../data/List":276,"../../data/helper/completeDimensions":278,"../../util/model":313,"zrender/lib/core/util":358}],73:[function(require,module,exports){
 'use strict';
 
 
@@ -7937,7 +8297,7 @@ require('zrender/lib/vml/vml');
         viewMixin: viewMixin
     };
 
-},{"../../data/List":275,"../../data/helper/completeDimensions":277,"../helper/WhiskerBoxDraw":69,"zrender/lib/core/util":357}],73:[function(require,module,exports){
+},{"../../data/List":276,"../../data/helper/completeDimensions":278,"../helper/WhiskerBoxDraw":70,"zrender/lib/core/util":358}],74:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -7962,7 +8322,7 @@ require('zrender/lib/vml/vml');
     // In case developer forget to include grid component
     require('../component/grid');
 
-},{"../component/grid":162,"../echarts":279,"../layout/points":281,"../processor/dataSample":299,"../visual/symbol":321,"./line/LineSeries":74,"./line/LineView":75,"zrender/lib/core/util":357}],74:[function(require,module,exports){
+},{"../component/grid":163,"../echarts":280,"../layout/points":282,"../processor/dataSample":300,"../visual/symbol":322,"./line/LineSeries":75,"./line/LineView":76,"zrender/lib/core/util":358}],75:[function(require,module,exports){
 'use strict';
 
 
@@ -8049,7 +8409,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../model/Series":287,"../helper/createListFromArray":71}],75:[function(require,module,exports){
+},{"../../model/Series":288,"../helper/createListFromArray":72}],76:[function(require,module,exports){
 'use strict';
 // FIXME step not support polar
 
@@ -8751,7 +9111,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../util/graphic":310,"../../util/model":312,"../../view/Chart":316,"../helper/Symbol":67,"../helper/SymbolDraw":68,"./lineAnimationDiff":76,"./poly":77,"zrender/lib/core/util":357}],76:[function(require,module,exports){
+},{"../../util/graphic":311,"../../util/model":313,"../../view/Chart":317,"../helper/Symbol":68,"../helper/SymbolDraw":69,"./lineAnimationDiff":77,"./poly":78,"zrender/lib/core/util":358}],77:[function(require,module,exports){
 
 
     // var arrayDiff = require('zrender/lib/core/arrayDiff');
@@ -8961,7 +9321,7 @@ require('zrender/lib/vml/vml');
         };
     };
 
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 // Poly path support NaN point
 
 
@@ -9212,7 +9572,7 @@ require('zrender/lib/vml/vml');
         })
     };
 
-},{"zrender/lib/core/vector":358,"zrender/lib/graphic/Path":365}],78:[function(require,module,exports){
+},{"zrender/lib/core/vector":359,"zrender/lib/graphic/Path":366}],79:[function(require,module,exports){
 
 
     require('./lines/LinesSeries');
@@ -9226,7 +9586,7 @@ require('zrender/lib/vml/vml');
         require('./lines/linesVisual')
     );
 
-},{"../echarts":279,"./lines/LinesSeries":79,"./lines/LinesView":80,"./lines/linesLayout":81,"./lines/linesVisual":82}],79:[function(require,module,exports){
+},{"../echarts":280,"./lines/LinesSeries":80,"./lines/LinesView":81,"./lines/linesLayout":82,"./lines/linesVisual":83}],80:[function(require,module,exports){
 'use strict';
 
 
@@ -9385,7 +9745,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../CoordinateSystem":3,"../../data/List":275,"../../model/Series":287,"../../util/format":309,"zrender/lib/core/util":357}],80:[function(require,module,exports){
+},{"../../CoordinateSystem":4,"../../data/List":276,"../../model/Series":288,"../../util/format":310,"zrender/lib/core/util":358}],81:[function(require,module,exports){
 
 
     var LineDraw = require('../helper/LineDraw');
@@ -9481,7 +9841,7 @@ require('zrender/lib/vml/vml');
         dispose: function () {}
     });
 
-},{"../../echarts":279,"../helper/EffectLine":58,"../helper/EffectPolyline":59,"../helper/LargeLineDraw":61,"../helper/Line":63,"../helper/LineDraw":64,"../helper/Polyline":66}],81:[function(require,module,exports){
+},{"../../echarts":280,"../helper/EffectLine":59,"../helper/EffectPolyline":60,"../helper/LargeLineDraw":62,"../helper/Line":64,"../helper/LineDraw":65,"../helper/Polyline":67}],82:[function(require,module,exports){
 
 
     module.exports = function (ecModel) {
@@ -9525,7 +9885,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 
 
     function normalize(a) {
@@ -9564,7 +9924,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 
 
     var echarts = require('../echarts');
@@ -9600,7 +9960,7 @@ require('zrender/lib/vml/vml');
         method: 'unSelect'
     }]);
 
-},{"../action/createDataSelectAction":5,"../action/geoRoam":6,"../coord/geo/geoCreator":252,"../echarts":279,"./map/MapSeries":84,"./map/MapView":85,"./map/backwardCompat":86,"./map/mapDataStatistic":87,"./map/mapSymbolLayout":88,"./map/mapVisual":89}],84:[function(require,module,exports){
+},{"../action/createDataSelectAction":6,"../action/geoRoam":7,"../coord/geo/geoCreator":253,"../echarts":280,"./map/MapSeries":85,"./map/MapView":86,"./map/backwardCompat":87,"./map/mapDataStatistic":88,"./map/mapSymbolLayout":89,"./map/mapVisual":90}],85:[function(require,module,exports){
 
 
     var List = require('../../data/List');
@@ -9846,7 +10206,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = MapSeries;
 
-},{"../../component/helper/selectableMixin":169,"../../coord/geo/geoCreator":252,"../../data/List":275,"../../data/helper/completeDimensions":277,"../../model/Series":287,"../../util/format":309,"zrender/lib/core/util":357}],85:[function(require,module,exports){
+},{"../../component/helper/selectableMixin":170,"../../coord/geo/geoCreator":253,"../../data/List":276,"../../data/helper/completeDimensions":278,"../../model/Series":288,"../../util/format":310,"zrender/lib/core/util":358}],86:[function(require,module,exports){
 
 
     // var zrUtil = require('zrender/lib/core/util');
@@ -9998,7 +10358,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../component/helper/MapDraw":164,"../../echarts":279,"../../util/graphic":310}],86:[function(require,module,exports){
+},{"../../component/helper/MapDraw":165,"../../echarts":280,"../../util/graphic":311}],87:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -10019,7 +10379,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"zrender/lib/core/util":357}],87:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],88:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -10103,7 +10463,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"zrender/lib/core/util":357}],88:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],89:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -10162,7 +10522,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"zrender/lib/core/util":357}],89:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],90:[function(require,module,exports){
 
     module.exports = function (ecModel) {
         ecModel.eachSeriesByType('map', function (seriesModel) {
@@ -10180,7 +10540,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{}],90:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 
 
     var echarts = require('../echarts');
@@ -10193,7 +10553,7 @@ require('zrender/lib/vml/vml');
     echarts.registerVisual(require('./parallel/parallelVisual'));
 
 
-},{"../component/parallel":188,"../echarts":279,"./parallel/ParallelSeries":91,"./parallel/ParallelView":92,"./parallel/parallelVisual":93}],91:[function(require,module,exports){
+},{"../component/parallel":189,"../echarts":280,"./parallel/ParallelSeries":92,"./parallel/ParallelView":93,"./parallel/parallelVisual":94}],92:[function(require,module,exports){
 
 
     var List = require('../../data/List');
@@ -10352,7 +10712,7 @@ require('zrender/lib/vml/vml');
         return dataDims;
     }
 
-},{"../../data/List":275,"../../data/helper/completeDimensions":277,"../../model/Series":287,"zrender/lib/core/util":357}],92:[function(require,module,exports){
+},{"../../data/List":276,"../../data/helper/completeDimensions":278,"../../model/Series":288,"zrender/lib/core/util":358}],93:[function(require,module,exports){
 
 
     var graphic = require('../../util/graphic');
@@ -10591,7 +10951,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = ParallelView;
 
-},{"../../util/graphic":310,"../../view/Chart":316,"zrender/lib/core/util":357}],93:[function(require,module,exports){
+},{"../../util/graphic":311,"../../view/Chart":317,"zrender/lib/core/util":358}],94:[function(require,module,exports){
 
 
     module.exports = function (ecModel) {
@@ -10626,7 +10986,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{}],94:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -10648,7 +11008,7 @@ require('zrender/lib/vml/vml');
     // In case developer forget to include grid component
     require('../component/grid');
 
-},{"../component/grid":162,"../coord/cartesian/Grid":243,"../echarts":279,"../layout/barGrid":280,"../visual/symbol":321,"./bar/PictorialBarSeries":12,"./bar/PictorialBarView":13,"zrender/lib/core/util":357}],95:[function(require,module,exports){
+},{"../component/grid":163,"../coord/cartesian/Grid":244,"../echarts":280,"../layout/barGrid":281,"../visual/symbol":322,"./bar/PictorialBarSeries":13,"./bar/PictorialBarView":14,"zrender/lib/core/util":358}],96:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -10679,7 +11039,7 @@ require('zrender/lib/vml/vml');
 
     echarts.registerProcessor(zrUtil.curry(require('../processor/dataFilter'), 'pie'));
 
-},{"../action/createDataSelectAction":5,"../echarts":279,"../processor/dataFilter":298,"../visual/dataColor":319,"./pie/PieSeries":96,"./pie/PieView":97,"./pie/pieLayout":99,"zrender/lib/core/util":357}],96:[function(require,module,exports){
+},{"../action/createDataSelectAction":6,"../echarts":280,"../processor/dataFilter":299,"../visual/dataColor":320,"./pie/PieSeries":97,"./pie/PieView":98,"./pie/pieLayout":100,"zrender/lib/core/util":358}],97:[function(require,module,exports){
 'use strict';
 
 
@@ -10825,7 +11185,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = PieSeries;
 
-},{"../../component/helper/selectableMixin":169,"../../data/List":275,"../../data/helper/completeDimensions":277,"../../echarts":279,"../../util/model":312,"zrender/lib/core/util":357}],97:[function(require,module,exports){
+},{"../../component/helper/selectableMixin":170,"../../data/List":276,"../../data/helper/completeDimensions":278,"../../echarts":280,"../../util/model":313,"zrender/lib/core/util":358}],98:[function(require,module,exports){
 
 
     var graphic = require('../../util/graphic');
@@ -11227,7 +11587,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Pie;
 
-},{"../../util/graphic":310,"../../view/Chart":316,"zrender/lib/core/util":357}],98:[function(require,module,exports){
+},{"../../util/graphic":311,"../../view/Chart":317,"zrender/lib/core/util":358}],99:[function(require,module,exports){
 'use strict';
 // FIXME emphasis label position is not same with normal label position
 
@@ -11454,7 +11814,7 @@ require('zrender/lib/vml/vml');
         }
     };
 
-},{"zrender/lib/contain/text":341}],99:[function(require,module,exports){
+},{"zrender/lib/contain/text":342}],100:[function(require,module,exports){
 // TODO minAngle
 
 
@@ -11596,7 +11956,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"../../util/number":313,"./labelLayout":98,"zrender/lib/core/util":357}],100:[function(require,module,exports){
+},{"../../util/number":314,"./labelLayout":99,"zrender/lib/core/util":358}],101:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -11620,7 +11980,7 @@ require('zrender/lib/vml/vml');
 
     echarts.registerPreprocessor(require('./radar/backwardCompat'));
 
-},{"../component/radar":191,"../echarts":279,"../processor/dataFilter":298,"../visual/dataColor":319,"../visual/symbol":321,"./radar/RadarSeries":101,"./radar/RadarView":102,"./radar/backwardCompat":103,"./radar/radarLayout":104,"zrender/lib/core/util":357}],101:[function(require,module,exports){
+},{"../component/radar":192,"../echarts":280,"../processor/dataFilter":299,"../visual/dataColor":320,"../visual/symbol":322,"./radar/RadarSeries":102,"./radar/RadarView":103,"./radar/backwardCompat":104,"./radar/radarLayout":105,"zrender/lib/core/util":358}],102:[function(require,module,exports){
 'use strict';
 
 
@@ -11697,7 +12057,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = RadarSeries;
 
-},{"../../data/List":275,"../../data/helper/completeDimensions":277,"../../model/Series":287,"../../util/format":309,"zrender/lib/core/util":357}],102:[function(require,module,exports){
+},{"../../data/List":276,"../../data/helper/completeDimensions":278,"../../model/Series":288,"../../util/format":310,"zrender/lib/core/util":358}],103:[function(require,module,exports){
 
 
     var graphic = require('../../util/graphic');
@@ -11919,7 +12279,7 @@ require('zrender/lib/vml/vml');
         dispose: function () {}
     });
 
-},{"../../echarts":279,"../../util/graphic":310,"../../util/symbol":314,"zrender/lib/core/util":357}],103:[function(require,module,exports){
+},{"../../echarts":280,"../../util/graphic":311,"../../util/symbol":315,"zrender/lib/core/util":358}],104:[function(require,module,exports){
 // Backward compat for radar chart in 2
 
 
@@ -11956,7 +12316,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{"zrender/lib/core/util":357}],104:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],105:[function(require,module,exports){
 
 
     module.exports = function (ecModel) {
@@ -11985,7 +12345,7 @@ require('zrender/lib/vml/vml');
         });
     };
 
-},{}],105:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 
 
     var echarts = require('../echarts');
@@ -11995,7 +12355,7 @@ require('zrender/lib/vml/vml');
     echarts.registerLayout(require('./sankey/sankeyLayout'));
     echarts.registerVisual(require('./sankey/sankeyVisual'));
 
-},{"../echarts":279,"./sankey/SankeySeries":106,"./sankey/SankeyView":107,"./sankey/sankeyLayout":108,"./sankey/sankeyVisual":109}],106:[function(require,module,exports){
+},{"../echarts":280,"./sankey/SankeySeries":107,"./sankey/SankeyView":108,"./sankey/sankeyLayout":109,"./sankey/sankeyVisual":110}],107:[function(require,module,exports){
 /**
  * @file Get initial data and define sankey view's series model
  * @author Deqing Li(annong035@gmail.com)
@@ -12128,7 +12488,7 @@ require('zrender/lib/vml/vml');
     module.exports = SankeySeries;
 
 
-},{"../../model/Series":287,"../../util/format":309,"../helper/createGraphFromNodeEdge":70}],107:[function(require,module,exports){
+},{"../../model/Series":288,"../../util/format":310,"../helper/createGraphFromNodeEdge":71}],108:[function(require,module,exports){
 /**
  * @file  The file used to draw sankey view
  * @author  Deqing Li(annong035@gmail.com)
@@ -12331,7 +12691,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../echarts":279,"../../util/graphic":310,"zrender/lib/core/util":357}],108:[function(require,module,exports){
+},{"../../echarts":280,"../../util/graphic":311,"zrender/lib/core/util":358}],109:[function(require,module,exports){
 /**
  * @file The layout algorithm of sankey view
  * @author  Deqing Li(annong035@gmail.com)
@@ -12703,7 +13063,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../util/array/nest":306,"../../util/layout":311,"zrender/lib/core/util":357}],109:[function(require,module,exports){
+},{"../../util/array/nest":307,"../../util/layout":312,"zrender/lib/core/util":358}],110:[function(require,module,exports){
 /**
  * @file Visual encoding for sankey view
  * @author  Deqing Li(annong035@gmail.com)
@@ -12747,7 +13107,7 @@ require('zrender/lib/vml/vml');
     };
 
 
-},{"../../visual/VisualMapping":318,"zrender/lib/core/util":357}],110:[function(require,module,exports){
+},{"../../visual/VisualMapping":319,"zrender/lib/core/util":358}],111:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -12766,7 +13126,7 @@ require('zrender/lib/vml/vml');
     // In case developer forget to include grid component
     require('../component/grid');
 
-},{"../component/grid":162,"../echarts":279,"../layout/points":281,"../visual/symbol":321,"./scatter/ScatterSeries":111,"./scatter/ScatterView":112,"zrender/lib/core/util":357}],111:[function(require,module,exports){
+},{"../component/grid":163,"../echarts":280,"../layout/points":282,"../visual/symbol":322,"./scatter/ScatterSeries":112,"./scatter/ScatterView":113,"zrender/lib/core/util":358}],112:[function(require,module,exports){
 'use strict';
 
 
@@ -12831,7 +13191,7 @@ require('zrender/lib/vml/vml');
 
     });
 
-},{"../../model/Series":287,"../helper/createListFromArray":71}],112:[function(require,module,exports){
+},{"../../model/Series":288,"../helper/createListFromArray":72}],113:[function(require,module,exports){
 
 
     var SymbolDraw = require('../helper/SymbolDraw');
@@ -12876,7 +13236,7 @@ require('zrender/lib/vml/vml');
         dispose: function () {}
     });
 
-},{"../../echarts":279,"../helper/LargeSymbolDraw":62,"../helper/SymbolDraw":68}],113:[function(require,module,exports){
+},{"../../echarts":280,"../helper/LargeSymbolDraw":63,"../helper/SymbolDraw":69}],114:[function(require,module,exports){
 
 
     var echarts = require('../echarts');
@@ -12896,7 +13256,7 @@ require('zrender/lib/vml/vml');
         zrUtil.curry(require('../processor/dataFilter'), 'themeRiver')
     );
 
-},{"../component/singleAxis":194,"../echarts":279,"../processor/dataFilter":298,"./themeRiver/ThemeRiverSeries":114,"./themeRiver/ThemeRiverView":115,"./themeRiver/themeRiverLayout":116,"./themeRiver/themeRiverVisual":117,"zrender/lib/core/util":357}],114:[function(require,module,exports){
+},{"../component/singleAxis":195,"../echarts":280,"../processor/dataFilter":299,"./themeRiver/ThemeRiverSeries":115,"./themeRiver/ThemeRiverView":116,"./themeRiver/themeRiverLayout":117,"./themeRiver/themeRiverVisual":118,"zrender/lib/core/util":358}],115:[function(require,module,exports){
 'use strict';
 /**
  * @file  Define the themeRiver view's series model
@@ -13223,7 +13583,7 @@ require('zrender/lib/vml/vml');
     module.exports = ThemeRiverSeries;
 
 
-},{"../../data/List":275,"../../data/helper/completeDimensions":277,"../../model/Series":287,"../../util/array/nest":306,"../../util/format":309,"zrender/lib/core/util":357}],115:[function(require,module,exports){
+},{"../../data/List":276,"../../data/helper/completeDimensions":278,"../../model/Series":288,"../../util/array/nest":307,"../../util/format":310,"zrender/lib/core/util":358}],116:[function(require,module,exports){
 /**
  * @file  The file used to draw themeRiver view
  * @author  Deqing Li(annong035@gmail.com)
@@ -13403,7 +13763,7 @@ require('zrender/lib/vml/vml');
 
 
 
-},{"../../data/DataDiffer":273,"../../echarts":279,"../../util/graphic":310,"../line/poly":77,"zrender/lib/core/util":357}],116:[function(require,module,exports){
+},{"../../data/DataDiffer":274,"../../echarts":280,"../../util/graphic":311,"../line/poly":78,"zrender/lib/core/util":358}],117:[function(require,module,exports){
 /**
  * @file  Using layout algorithm transform the raw data to layout information.
  * @author Deqing Li(annong035@gmail.com)
@@ -13548,7 +13908,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../util/number":313,"zrender/lib/core/util":357}],117:[function(require,module,exports){
+},{"../../util/number":314,"zrender/lib/core/util":358}],118:[function(require,module,exports){
 /**
  * @file Visual encoding for themeRiver view
  * @author  Deqing Li(annong035@gmail.com)
@@ -13570,7 +13930,7 @@ require('zrender/lib/vml/vml');
     };
 
 
-},{}],118:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 
 
     var echarts = require('../echarts');
@@ -13583,7 +13943,7 @@ require('zrender/lib/vml/vml');
 
     echarts.registerLayout(require('./treemap/treemapLayout'));
 
-},{"../echarts":279,"./treemap/TreemapSeries":120,"./treemap/TreemapView":121,"./treemap/treemapAction":123,"./treemap/treemapLayout":124,"./treemap/treemapVisual":125}],119:[function(require,module,exports){
+},{"../echarts":280,"./treemap/TreemapSeries":121,"./treemap/TreemapView":122,"./treemap/treemapAction":124,"./treemap/treemapLayout":125,"./treemap/treemapVisual":126}],120:[function(require,module,exports){
  
 
     var graphic = require('../../util/graphic');
@@ -13755,7 +14115,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Breadcrumb;
 
-},{"../../util/graphic":310,"../../util/layout":311,"./helper":122,"zrender/lib/core/util":357}],120:[function(require,module,exports){
+},{"../../util/graphic":311,"../../util/layout":312,"./helper":123,"zrender/lib/core/util":358}],121:[function(require,module,exports){
 
 
     var SeriesModel = require('../../model/Series');
@@ -14112,7 +14472,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../data/Tree":276,"../../model/Model":285,"../../model/Series":287,"../../util/format":309,"./helper":122,"zrender/lib/core/util":357}],121:[function(require,module,exports){
+},{"../../data/Tree":277,"../../model/Model":286,"../../model/Series":288,"../../util/format":310,"./helper":123,"zrender/lib/core/util":358}],122:[function(require,module,exports){
  
 
     var zrUtil = require('zrender/lib/core/util');
@@ -14992,7 +15352,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../component/helper/RoamController":165,"../../data/DataDiffer":273,"../../echarts":279,"../../util/animation":305,"../../util/graphic":310,"./Breadcrumb":119,"./helper":122,"zrender/lib/core/BoundingRect":345,"zrender/lib/core/matrix":355,"zrender/lib/core/util":357}],122:[function(require,module,exports){
+},{"../../component/helper/RoamController":166,"../../data/DataDiffer":274,"../../echarts":280,"../../util/animation":306,"../../util/graphic":311,"./Breadcrumb":120,"./helper":123,"zrender/lib/core/BoundingRect":346,"zrender/lib/core/matrix":356,"zrender/lib/core/util":358}],123:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -15056,7 +15416,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = helper;
 
-},{"zrender/lib/core/util":357}],123:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],124:[function(require,module,exports){
 /**
  * @file Treemap action
  */
@@ -15102,7 +15462,7 @@ require('zrender/lib/vml/vml');
     );
 
 
-},{"../../echarts":279,"./helper":122}],124:[function(require,module,exports){
+},{"../../echarts":280,"./helper":123}],125:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -15653,7 +16013,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = update;
 
-},{"../../util/layout":311,"../../util/number":313,"./helper":122,"zrender/lib/core/BoundingRect":345,"zrender/lib/core/util":357}],125:[function(require,module,exports){
+},{"../../util/layout":312,"../../util/number":314,"./helper":123,"zrender/lib/core/BoundingRect":346,"zrender/lib/core/util":358}],126:[function(require,module,exports){
 
 
     var VisualMapping = require('../../visual/VisualMapping');
@@ -15881,7 +16241,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../visual/VisualMapping":318,"zrender/lib/core/util":357,"zrender/lib/tool/color":388}],126:[function(require,module,exports){
+},{"../../visual/VisualMapping":319,"zrender/lib/core/util":358,"zrender/lib/tool/color":389}],127:[function(require,module,exports){
 'use strict';
 
 
@@ -15889,7 +16249,7 @@ require('zrender/lib/vml/vml');
 
     require('./axis/AngleAxisView');
 
-},{"../coord/polar/polarCreator":265,"./axis/AngleAxisView":128}],127:[function(require,module,exports){
+},{"../coord/polar/polarCreator":266,"./axis/AngleAxisView":129}],128:[function(require,module,exports){
 'use strict';
 // TODO boundaryGap
 
@@ -15898,7 +16258,7 @@ require('zrender/lib/vml/vml');
 
     require('./axis/AxisView');
 
-},{"../coord/cartesian/AxisModel":240,"./axis/AxisView":130}],128:[function(require,module,exports){
+},{"../coord/cartesian/AxisModel":241,"./axis/AxisView":131}],129:[function(require,module,exports){
 'use strict';
 
 
@@ -16130,7 +16490,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../echarts":279,"../../model/Model":285,"../../util/graphic":310,"zrender/lib/core/util":357}],129:[function(require,module,exports){
+},{"../../echarts":280,"../../model/Model":286,"../../util/graphic":311,"zrender/lib/core/util":358}],130:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -16726,7 +17086,7 @@ require('zrender/lib/vml/vml');
     module.exports = AxisBuilder;
 
 
-},{"../../model/Model":285,"../../util/format":309,"../../util/graphic":310,"../../util/number":313,"zrender/lib/core/util":357,"zrender/lib/core/vector":358}],130:[function(require,module,exports){
+},{"../../model/Model":286,"../../util/format":310,"../../util/graphic":311,"../../util/number":314,"zrender/lib/core/util":358,"zrender/lib/core/vector":359}],131:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -17015,7 +17375,7 @@ require('zrender/lib/vml/vml');
         return layout;
     }
 
-},{"../../echarts":279,"../../util/graphic":310,"./AxisBuilder":129,"zrender/lib/core/util":357}],131:[function(require,module,exports){
+},{"../../echarts":280,"../../util/graphic":311,"./AxisBuilder":130,"zrender/lib/core/util":358}],132:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -17192,7 +17552,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = AxisView;
 
-},{"../../echarts":279,"../../util/graphic":310,"../helper/BrushController":163,"./AxisBuilder":129,"zrender/lib/core/util":357}],132:[function(require,module,exports){
+},{"../../echarts":280,"../../util/graphic":311,"../helper/BrushController":164,"./AxisBuilder":130,"zrender/lib/core/util":358}],133:[function(require,module,exports){
 'use strict';
 
 
@@ -17336,7 +17696,7 @@ require('zrender/lib/vml/vml');
         };
     }
 
-},{"../../echarts":279,"../../util/graphic":310,"./AxisBuilder":129,"zrender/lib/core/util":357}],133:[function(require,module,exports){
+},{"../../echarts":280,"../../util/graphic":311,"./AxisBuilder":130,"zrender/lib/core/util":358}],134:[function(require,module,exports){
 
 
     var AxisBuilder = require('./AxisBuilder');
@@ -17503,7 +17863,7 @@ require('zrender/lib/vml/vml');
     module.exports = AxisView;
 
 
-},{"../../echarts":279,"../../util/graphic":310,"./AxisBuilder":129,"zrender/lib/core/util":357}],134:[function(require,module,exports){
+},{"../../echarts":280,"../../util/graphic":311,"./AxisBuilder":130,"zrender/lib/core/util":358}],135:[function(require,module,exports){
 
 
     var echarts = require('../../echarts');
@@ -17540,7 +17900,7 @@ require('zrender/lib/vml/vml');
 
     });
 
-},{"../../echarts":279}],135:[function(require,module,exports){
+},{"../../echarts":280}],136:[function(require,module,exports){
 /**
  * Brush component entry
  */
@@ -17558,7 +17918,7 @@ require('zrender/lib/vml/vml');
     require('./toolbox/feature/Brush');
 
 
-},{"../echarts":279,"./brush/BrushModel":136,"./brush/BrushView":137,"./brush/brushAction":138,"./brush/preprocessor":139,"./brush/visualEncoding":141,"./toolbox/feature/Brush":208}],136:[function(require,module,exports){
+},{"../echarts":280,"./brush/BrushModel":137,"./brush/BrushView":138,"./brush/brushAction":139,"./brush/preprocessor":140,"./brush/visualEncoding":142,"./toolbox/feature/Brush":210}],137:[function(require,module,exports){
 /**
  * @file Brush model
  */
@@ -17708,7 +18068,7 @@ require('zrender/lib/vml/vml');
     module.exports = BrushModel;
 
 
-},{"../../echarts":279,"../../model/Model":285,"../../visual/visualSolution":323,"zrender/lib/core/util":357}],137:[function(require,module,exports){
+},{"../../echarts":280,"../../model/Model":286,"../../visual/visualSolution":324,"zrender/lib/core/util":358}],138:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -17810,7 +18170,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../echarts":279,"../helper/BrushController":163,"../helper/brushHelper":166,"zrender/lib/core/util":357}],138:[function(require,module,exports){
+},{"../../echarts":280,"../helper/BrushController":164,"../helper/brushHelper":167,"zrender/lib/core/util":358}],139:[function(require,module,exports){
 /**
  * @file Brush action
  */
@@ -17861,7 +18221,7 @@ require('zrender/lib/vml/vml');
         function () {}
     );
 
-},{"../../echarts":279}],139:[function(require,module,exports){
+},{"../../echarts":280}],140:[function(require,module,exports){
 /**
  * @file brush preprocessor
  */
@@ -17927,7 +18287,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"zrender/lib/core/util":357}],140:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],141:[function(require,module,exports){
 
 
     var polygonContain = require('zrender/lib/contain/polygon').contain;
@@ -18052,7 +18412,7 @@ require('zrender/lib/vml/vml');
     module.exports = selector;
 
 
-},{"zrender/lib/contain/polygon":339,"zrender/lib/core/BoundingRect":345}],141:[function(require,module,exports){
+},{"zrender/lib/contain/polygon":340,"zrender/lib/core/BoundingRect":346}],142:[function(require,module,exports){
 /**
  * @file Brush visual coding.
  */
@@ -18377,7 +18737,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../echarts":279,"../../util/throttle":315,"../../visual/visualSolution":323,"../helper/brushHelper":166,"./selector":140,"zrender/lib/core/BoundingRect":345,"zrender/lib/core/util":357}],142:[function(require,module,exports){
+},{"../../echarts":280,"../../util/throttle":316,"../../visual/visualSolution":324,"../helper/brushHelper":167,"./selector":141,"zrender/lib/core/BoundingRect":346,"zrender/lib/core/util":358}],143:[function(require,module,exports){
 /**
  * DataZoom component entry
  */
@@ -18398,7 +18758,25 @@ require('zrender/lib/vml/vml');
     require('./dataZoom/dataZoomAction');
 
 
-},{"./dataZoom/DataZoomModel":144,"./dataZoom/DataZoomView":145,"./dataZoom/InsideZoomModel":146,"./dataZoom/InsideZoomView":147,"./dataZoom/SliderZoomModel":150,"./dataZoom/SliderZoomView":151,"./dataZoom/dataZoomAction":152,"./dataZoom/dataZoomProcessor":153,"./dataZoom/typeDefaulter":157}],143:[function(require,module,exports){
+},{"./dataZoom/DataZoomModel":146,"./dataZoom/DataZoomView":147,"./dataZoom/InsideZoomModel":148,"./dataZoom/InsideZoomView":149,"./dataZoom/SliderZoomModel":152,"./dataZoom/SliderZoomView":153,"./dataZoom/dataZoomAction":154,"./dataZoom/dataZoomProcessor":155,"./dataZoom/typeDefaulter":159}],144:[function(require,module,exports){
+/**
+ * DataZoom component entry
+ */
+
+
+    require('./dataZoom/typeDefaulter');
+
+    require('./dataZoom/DataZoomModel');
+    require('./dataZoom/DataZoomView');
+
+    require('./dataZoom/SelectZoomModel');
+    require('./dataZoom/SelectZoomView');
+
+    require('./dataZoom/dataZoomProcessor');
+    require('./dataZoom/dataZoomAction');
+
+
+},{"./dataZoom/DataZoomModel":146,"./dataZoom/DataZoomView":147,"./dataZoom/SelectZoomModel":150,"./dataZoom/SelectZoomView":151,"./dataZoom/dataZoomAction":154,"./dataZoom/dataZoomProcessor":155,"./dataZoom/typeDefaulter":159}],145:[function(require,module,exports){
 /**
  * @file Axis operator
  */
@@ -18765,7 +19143,7 @@ require('zrender/lib/vml/vml');
     module.exports = AxisProxy;
 
 
-},{"../../util/number":313,"./helper":154,"zrender/lib/core/util":357}],144:[function(require,module,exports){
+},{"../../util/number":314,"./helper":156,"zrender/lib/core/util":358}],146:[function(require,module,exports){
 /**
  * @file Data zoom model
  */
@@ -19253,7 +19631,7 @@ require('zrender/lib/vml/vml');
     module.exports = DataZoomModel;
 
 
-},{"../../echarts":279,"../../util/model":312,"./AxisProxy":143,"./helper":154,"zrender/lib/core/env":351,"zrender/lib/core/util":357}],145:[function(require,module,exports){
+},{"../../echarts":280,"../../util/model":313,"./AxisProxy":145,"./helper":156,"zrender/lib/core/env":352,"zrender/lib/core/util":358}],147:[function(require,module,exports){
 
 
     var ComponentView = require('../../view/Component');
@@ -19326,7 +19704,7 @@ require('zrender/lib/vml/vml');
     });
 
 
-},{"../../view/Component":317}],146:[function(require,module,exports){
+},{"../../view/Component":318}],148:[function(require,module,exports){
 /**
  * @file Data zoom model
  */
@@ -19345,7 +19723,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"./DataZoomModel":144}],147:[function(require,module,exports){
+},{"./DataZoomModel":146}],149:[function(require,module,exports){
 
 
     var DataZoomView = require('./DataZoomView');
@@ -19577,7 +19955,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = InsideZoomView;
 
-},{"../helper/sliderMove":170,"./DataZoomView":145,"./roams":156,"zrender/lib/core/util":357}],148:[function(require,module,exports){
+},{"../helper/sliderMove":171,"./DataZoomView":147,"./roams":158,"zrender/lib/core/util":358}],150:[function(require,module,exports){
 /**
  * @file Data zoom model
  */
@@ -19592,7 +19970,7 @@ require('zrender/lib/vml/vml');
     });
 
 
-},{"./DataZoomModel":144}],149:[function(require,module,exports){
+},{"./DataZoomModel":146}],151:[function(require,module,exports){
 
 
     module.exports = require('./DataZoomView').extend({
@@ -19602,7 +19980,7 @@ require('zrender/lib/vml/vml');
     });
 
 
-},{"./DataZoomView":145}],150:[function(require,module,exports){
+},{"./DataZoomView":147}],152:[function(require,module,exports){
 /**
  * @file Data zoom model
  */
@@ -19677,7 +20055,7 @@ require('zrender/lib/vml/vml');
     module.exports = SliderZoomModel;
 
 
-},{"./DataZoomModel":144}],151:[function(require,module,exports){
+},{"./DataZoomModel":146}],153:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -20433,7 +20811,7 @@ require('zrender/lib/vml/vml');
     module.exports = SliderZoomView;
 
 
-},{"../../util/graphic":310,"../../util/layout":311,"../../util/number":313,"../../util/throttle":315,"../helper/sliderMove":170,"./DataZoomView":145,"zrender/lib/core/util":357}],152:[function(require,module,exports){
+},{"../../util/graphic":311,"../../util/layout":312,"../../util/number":314,"../../util/throttle":316,"../helper/sliderMove":171,"./DataZoomView":147,"zrender/lib/core/util":358}],154:[function(require,module,exports){
 /**
  * @file Data zoom action
  */
@@ -20477,7 +20855,7 @@ require('zrender/lib/vml/vml');
     });
 
 
-},{"../../echarts":279,"./helper":154,"zrender/lib/core/util":357}],153:[function(require,module,exports){
+},{"../../echarts":280,"./helper":156,"zrender/lib/core/util":358}],155:[function(require,module,exports){
 /**
  * @file Data zoom processor
  */
@@ -20536,7 +20914,7 @@ require('zrender/lib/vml/vml');
 
 
 
-},{"../../echarts":279}],154:[function(require,module,exports){
+},{"../../echarts":280}],156:[function(require,module,exports){
 
     var formatUtil = require('../../util/format');
     var zrUtil = require('zrender/lib/core/util');
@@ -20670,7 +21048,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = helper;
 
-},{"../../util/format":309,"zrender/lib/core/util":357}],155:[function(require,module,exports){
+},{"../../util/format":310,"zrender/lib/core/util":358}],157:[function(require,module,exports){
 /**
  * @file History manager.
  */
@@ -20780,7 +21158,7 @@ require('zrender/lib/vml/vml');
     module.exports = history;
 
 
-},{"zrender/lib/core/util":357}],156:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],158:[function(require,module,exports){
 /**
  * @file Roam controller manager.
  */
@@ -20971,7 +21349,7 @@ require('zrender/lib/vml/vml');
     module.exports = roams;
 
 
-},{"../../component/helper/RoamController":165,"../../util/throttle":315,"zrender/lib/core/util":357}],157:[function(require,module,exports){
+},{"../../component/helper/RoamController":166,"../../util/throttle":316,"zrender/lib/core/util":358}],159:[function(require,module,exports){
 
 
     require('../../model/Component').registerSubTypeDefaulter('dataZoom', function (option) {
@@ -20980,25 +21358,7 @@ require('zrender/lib/vml/vml');
     });
 
 
-},{"../../model/Component":283}],158:[function(require,module,exports){
-/**
- * DataZoom component entry
- */
-
-
-    require('./dataZoom/typeDefaulter');
-
-    require('./dataZoom/DataZoomModel');
-    require('./dataZoom/DataZoomView');
-
-    require('./dataZoom/SelectZoomModel');
-    require('./dataZoom/SelectZoomView');
-
-    require('./dataZoom/dataZoomProcessor');
-    require('./dataZoom/dataZoomAction');
-
-
-},{"./dataZoom/DataZoomModel":144,"./dataZoom/DataZoomView":145,"./dataZoom/SelectZoomModel":148,"./dataZoom/SelectZoomView":149,"./dataZoom/dataZoomAction":152,"./dataZoom/dataZoomProcessor":153,"./dataZoom/typeDefaulter":157}],159:[function(require,module,exports){
+},{"../../model/Component":284}],160:[function(require,module,exports){
 
 
     require('../coord/geo/GeoModel');
@@ -21048,7 +21408,7 @@ require('zrender/lib/vml/vml');
         event: 'geounselected'
     });
 
-},{"../action/geoRoam":6,"../coord/geo/GeoModel":247,"../coord/geo/geoCreator":252,"../echarts":279,"./geo/GeoView":160,"zrender/lib/core/util":357}],160:[function(require,module,exports){
+},{"../action/geoRoam":7,"../coord/geo/GeoModel":248,"../coord/geo/geoCreator":253,"../echarts":280,"./geo/GeoView":161,"zrender/lib/core/util":358}],161:[function(require,module,exports){
 'use strict';
 
 
@@ -21090,7 +21450,7 @@ require('zrender/lib/vml/vml');
 
     });
 
-},{"../../echarts":279,"../helper/MapDraw":164}],161:[function(require,module,exports){
+},{"../../echarts":280,"../helper/MapDraw":165}],162:[function(require,module,exports){
 
 
     var echarts = require('../echarts');
@@ -21571,7 +21931,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../echarts":279,"../util/graphic":310,"../util/layout":311,"../util/model":312,"zrender/lib/core/util":357}],162:[function(require,module,exports){
+},{"../echarts":280,"../util/graphic":311,"../util/layout":312,"../util/model":313,"zrender/lib/core/util":358}],163:[function(require,module,exports){
 'use strict';
 
 
@@ -21611,7 +21971,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../coord/cartesian/Grid":243,"../echarts":279,"../util/graphic":310,"./axis":127,"zrender/lib/core/util":357}],163:[function(require,module,exports){
+},{"../coord/cartesian/Grid":244,"../echarts":280,"../util/graphic":311,"./axis":128,"zrender/lib/core/util":358}],164:[function(require,module,exports){
 /**
  * Box selection tool.
  *
@@ -22614,7 +22974,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = BrushController;
 
-},{"../../data/DataDiffer":273,"../../util/graphic":310,"./interactionMutex":167,"zrender/lib/core/BoundingRect":345,"zrender/lib/core/util":357,"zrender/lib/mixin/Eventful":386}],164:[function(require,module,exports){
+},{"../../data/DataDiffer":274,"../../util/graphic":311,"./interactionMutex":168,"zrender/lib/core/BoundingRect":346,"zrender/lib/core/util":358,"zrender/lib/mixin/Eventful":387}],165:[function(require,module,exports){
 /**
  * @module echarts/component/helper/MapDraw
  */
@@ -22950,7 +23310,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = MapDraw;
 
-},{"../../util/graphic":310,"./RoamController":165,"zrender/lib/core/util":357}],165:[function(require,module,exports){
+},{"../../util/graphic":311,"./RoamController":166,"zrender/lib/core/util":358}],166:[function(require,module,exports){
 /**
  * @module echarts/component/helper/RoamController
  */
@@ -23180,7 +23540,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = RoamController;
 
-},{"./interactionMutex":167,"zrender/lib/core/event":352,"zrender/lib/core/util":357,"zrender/lib/mixin/Eventful":386}],166:[function(require,module,exports){
+},{"./interactionMutex":168,"zrender/lib/core/event":353,"zrender/lib/core/util":358,"zrender/lib/mixin/Eventful":387}],167:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -23410,7 +23770,7 @@ require('zrender/lib/vml/vml');
     module.exports = helper;
 
 
-},{"../../util/graphic":310,"zrender/lib/core/util":357}],167:[function(require,module,exports){
+},{"../../util/graphic":311,"zrender/lib/core/util":358}],168:[function(require,module,exports){
 
 
     var ATTR = '\0_ec_interaction_mutex';
@@ -23454,7 +23814,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = interactionMutex;
 
-},{"../../echarts":279}],168:[function(require,module,exports){
+},{"../../echarts":280}],169:[function(require,module,exports){
 
     // List layout
     var layout = require('../../util/layout');
@@ -23520,7 +23880,7 @@ require('zrender/lib/vml/vml');
         }
     };
 
-},{"../../util/format":309,"../../util/graphic":310,"../../util/layout":311}],169:[function(require,module,exports){
+},{"../../util/format":310,"../../util/graphic":311,"../../util/layout":312}],170:[function(require,module,exports){
 /**
  * Data selectable mixin for chart series.
  * To eanble data select, option of series must have `selectedMode`.
@@ -23586,7 +23946,7 @@ require('zrender/lib/vml/vml');
         }
     };
 
-},{"zrender/lib/core/util":357}],170:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],171:[function(require,module,exports){
 
 
     /**
@@ -23641,7 +24001,7 @@ require('zrender/lib/vml/vml');
         }
     };
 
-},{}],171:[function(require,module,exports){
+},{}],172:[function(require,module,exports){
 /**
  * Legend component entry file8
  */
@@ -23655,7 +24015,7 @@ require('zrender/lib/vml/vml');
     // Series Filter
     echarts.registerProcessor(require('./legend/legendFilter'));
 
-},{"../echarts":279,"./legend/LegendModel":172,"./legend/LegendView":173,"./legend/legendAction":174,"./legend/legendFilter":175}],172:[function(require,module,exports){
+},{"../echarts":280,"./legend/LegendModel":173,"./legend/LegendView":174,"./legend/legendAction":175,"./legend/legendFilter":176}],173:[function(require,module,exports){
 'use strict';
 
 
@@ -23848,7 +24208,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = LegendModel;
 
-},{"../../echarts":279,"../../model/Model":285,"zrender/lib/core/util":357}],173:[function(require,module,exports){
+},{"../../echarts":280,"../../model/Model":286,"zrender/lib/core/util":358}],174:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -24114,7 +24474,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../echarts":279,"../../util/graphic":310,"../../util/symbol":314,"../helper/listComponent":168,"zrender/lib/core/util":357}],174:[function(require,module,exports){
+},{"../../echarts":280,"../../util/graphic":311,"../../util/symbol":315,"../helper/listComponent":169,"zrender/lib/core/util":358}],175:[function(require,module,exports){
 /**
  * @file Legend action
  */
@@ -24197,7 +24557,7 @@ require('zrender/lib/vml/vml');
         zrUtil.curry(legendSelectActionHandler, 'unSelect')
     );
 
-},{"../../echarts":279,"zrender/lib/core/util":357}],175:[function(require,module,exports){
+},{"../../echarts":280,"zrender/lib/core/util":358}],176:[function(require,module,exports){
 
    module.exports = function (ecModel) {
         var legendModels = ecModel.findComponents({
@@ -24217,7 +24577,7 @@ require('zrender/lib/vml/vml');
         }
     };
 
-},{}],176:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 
 
     require('./marker/MarkAreaModel');
@@ -24228,7 +24588,7 @@ require('zrender/lib/vml/vml');
         opt.markArea = opt.markArea || {};
     });
 
-},{"../echarts":279,"./marker/MarkAreaModel":179,"./marker/MarkAreaView":180}],177:[function(require,module,exports){
+},{"../echarts":280,"./marker/MarkAreaModel":180,"./marker/MarkAreaView":181}],178:[function(require,module,exports){
 
 
     require('./marker/MarkLineModel');
@@ -24239,7 +24599,7 @@ require('zrender/lib/vml/vml');
         opt.markLine = opt.markLine || {};
     });
 
-},{"../echarts":279,"./marker/MarkLineModel":181,"./marker/MarkLineView":182}],178:[function(require,module,exports){
+},{"../echarts":280,"./marker/MarkLineModel":182,"./marker/MarkLineView":183}],179:[function(require,module,exports){
 // HINT Markpoint can't be used too much
 
 
@@ -24251,7 +24611,7 @@ require('zrender/lib/vml/vml');
         opt.markPoint = opt.markPoint || {};
     });
 
-},{"../echarts":279,"./marker/MarkPointModel":183,"./marker/MarkPointView":184}],179:[function(require,module,exports){
+},{"../echarts":280,"./marker/MarkPointModel":184,"./marker/MarkPointView":185}],180:[function(require,module,exports){
 
 
     module.exports = require('./MarkerModel').extend({
@@ -24288,7 +24648,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"./MarkerModel":185}],180:[function(require,module,exports){
+},{"./MarkerModel":186}],181:[function(require,module,exports){
 // TODO Better on polar
 
 
@@ -24606,7 +24966,7 @@ require('zrender/lib/vml/vml');
         return areaData;
     }
 
-},{"../../data/List":275,"../../util/graphic":310,"../../util/number":313,"./MarkerView":186,"./markerHelper":187,"zrender/lib/core/util":357,"zrender/lib/tool/color":388}],181:[function(require,module,exports){
+},{"../../data/List":276,"../../util/graphic":311,"../../util/number":314,"./MarkerView":187,"./markerHelper":188,"zrender/lib/core/util":358,"zrender/lib/tool/color":389}],182:[function(require,module,exports){
 
 
     module.exports = require('./MarkerModel').extend({
@@ -24647,7 +25007,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"./MarkerModel":185}],182:[function(require,module,exports){
+},{"./MarkerModel":186}],183:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -25003,7 +25363,7 @@ require('zrender/lib/vml/vml');
         };
     }
 
-},{"../../chart/helper/LineDraw":64,"../../data/List":275,"../../util/number":313,"./MarkerView":186,"./markerHelper":187,"zrender/lib/core/util":357}],183:[function(require,module,exports){
+},{"../../chart/helper/LineDraw":65,"../../data/List":276,"../../util/number":314,"./MarkerView":187,"./markerHelper":188,"zrender/lib/core/util":358}],184:[function(require,module,exports){
 
 
     module.exports = require('./MarkerModel').extend({
@@ -25037,7 +25397,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"./MarkerModel":185}],184:[function(require,module,exports){
+},{"./MarkerModel":186}],185:[function(require,module,exports){
 
 
     var SymbolDraw = require('../../chart/helper/SymbolDraw');
@@ -25194,7 +25554,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../chart/helper/SymbolDraw":68,"../../data/List":275,"../../util/number":313,"./MarkerView":186,"./markerHelper":187,"zrender/lib/core/util":357}],185:[function(require,module,exports){
+},{"../../chart/helper/SymbolDraw":69,"../../data/List":276,"../../util/number":314,"./MarkerView":187,"./markerHelper":188,"zrender/lib/core/util":358}],186:[function(require,module,exports){
 
 
     var modelUtil = require('../../util/model');
@@ -25328,7 +25688,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = MarkerModel;
 
-},{"../../echarts":279,"../../util/format":309,"../../util/model":312,"zrender/lib/core/env":351,"zrender/lib/core/util":357}],186:[function(require,module,exports){
+},{"../../echarts":280,"../../util/format":310,"../../util/model":313,"zrender/lib/core/env":352,"zrender/lib/core/util":358}],187:[function(require,module,exports){
 
 
     module.exports = require('../../echarts').extendComponentView({
@@ -25368,7 +25728,7 @@ require('zrender/lib/vml/vml');
         renderSeries: function () {}
     });
 
-},{"../../echarts":279}],187:[function(require,module,exports){
+},{"../../echarts":280}],188:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -25568,7 +25928,7 @@ require('zrender/lib/vml/vml');
         numCalculate: numCalculate
     };
 
-},{"../../util/number":313,"zrender/lib/core/util":357}],188:[function(require,module,exports){
+},{"../../util/number":314,"zrender/lib/core/util":358}],189:[function(require,module,exports){
 
 
     require('../coord/parallel/parallelCreator');
@@ -25627,7 +25987,7 @@ require('zrender/lib/vml/vml');
     );
 
 
-},{"../coord/parallel/ParallelModel":257,"../coord/parallel/parallelCreator":258,"../coord/parallel/parallelPreprocessor":259,"../echarts":279,"./parallelAxis":189,"zrender/lib/core/util":357}],189:[function(require,module,exports){
+},{"../coord/parallel/ParallelModel":258,"../coord/parallel/parallelCreator":259,"../coord/parallel/parallelPreprocessor":260,"../echarts":280,"./parallelAxis":190,"zrender/lib/core/util":358}],190:[function(require,module,exports){
 
 
     require('../coord/parallel/parallelCreator');
@@ -25635,7 +25995,7 @@ require('zrender/lib/vml/vml');
     require('./axis/ParallelAxisView');
 
 
-},{"../coord/parallel/parallelCreator":258,"./axis/ParallelAxisView":131,"./axis/parallelAxisAction":134}],190:[function(require,module,exports){
+},{"../coord/parallel/parallelCreator":259,"./axis/ParallelAxisView":132,"./axis/parallelAxisAction":135}],191:[function(require,module,exports){
 'use strict';
 
 
@@ -25648,7 +26008,7 @@ require('zrender/lib/vml/vml');
         type: 'polar'
     });
 
-},{"../coord/polar/polarCreator":265,"../echarts":279,"./angleAxis":126,"./radiusAxis":193}],191:[function(require,module,exports){
+},{"../coord/polar/polarCreator":266,"../echarts":280,"./angleAxis":127,"./radiusAxis":194}],192:[function(require,module,exports){
 
 
     require('../coord/radar/Radar');
@@ -25656,7 +26016,7 @@ require('zrender/lib/vml/vml');
 
     require('./radar/RadarView');
 
-},{"../coord/radar/Radar":267,"../coord/radar/RadarModel":268,"./radar/RadarView":192}],192:[function(require,module,exports){
+},{"../coord/radar/Radar":268,"../coord/radar/RadarModel":269,"./radar/RadarView":193}],193:[function(require,module,exports){
 
 
     var AxisBuilder = require('../axis/AxisBuilder');
@@ -25832,14 +26192,14 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../echarts":279,"../../util/graphic":310,"../axis/AxisBuilder":129,"zrender/lib/core/util":357}],193:[function(require,module,exports){
+},{"../../echarts":280,"../../util/graphic":311,"../axis/AxisBuilder":130,"zrender/lib/core/util":358}],194:[function(require,module,exports){
 
 
     require('../coord/polar/polarCreator');
 
     require('./axis/RadiusAxisView');
 
-},{"../coord/polar/polarCreator":265,"./axis/RadiusAxisView":132}],194:[function(require,module,exports){
+},{"../coord/polar/polarCreator":266,"./axis/RadiusAxisView":133}],195:[function(require,module,exports){
 
 
     require('../coord/single/singleCreator');
@@ -25853,7 +26213,7 @@ require('zrender/lib/vml/vml');
     });
 
 
-},{"../coord/single/AxisModel":269,"../coord/single/singleCreator":272,"../echarts":279,"./axis/SingleAxisView":133}],195:[function(require,module,exports){
+},{"../coord/single/AxisModel":270,"../coord/single/singleCreator":273,"../echarts":280,"./axis/SingleAxisView":134}],196:[function(require,module,exports){
 /**
  * DataZoom component entry
  */
@@ -25869,7 +26229,7 @@ require('zrender/lib/vml/vml');
     require('./timeline/SliderTimelineView');
 
 
-},{"../echarts":279,"./timeline/SliderTimelineModel":196,"./timeline/SliderTimelineView":197,"./timeline/preprocessor":201,"./timeline/timelineAction":202,"./timeline/typeDefaulter":203}],196:[function(require,module,exports){
+},{"../echarts":280,"./timeline/SliderTimelineModel":197,"./timeline/SliderTimelineView":198,"./timeline/preprocessor":202,"./timeline/timelineAction":203,"./timeline/typeDefaulter":204}],197:[function(require,module,exports){
 /**
  * @file Silder timeline model
  */
@@ -25981,7 +26341,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = SliderTimelineModel;
 
-},{"../../util/model":312,"./TimelineModel":199,"zrender/lib/core/util":357}],197:[function(require,module,exports){
+},{"../../util/model":313,"./TimelineModel":200,"zrender/lib/core/util":358}],198:[function(require,module,exports){
 /**
  * @file Silder timeline view
  */
@@ -26695,7 +27055,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../coord/axisHelper":236,"../../util/format":309,"../../util/graphic":310,"../../util/layout":311,"../../util/number":313,"../../util/symbol":314,"./TimelineAxis":198,"./TimelineView":200,"zrender/lib/core/BoundingRect":345,"zrender/lib/core/matrix":355,"zrender/lib/core/util":357}],198:[function(require,module,exports){
+},{"../../coord/axisHelper":237,"../../util/format":310,"../../util/graphic":311,"../../util/layout":312,"../../util/number":314,"../../util/symbol":315,"./TimelineAxis":199,"./TimelineView":201,"zrender/lib/core/BoundingRect":346,"zrender/lib/core/matrix":356,"zrender/lib/core/util":358}],199:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -26792,7 +27152,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = TimelineAxis;
 
-},{"../../coord/Axis":233,"../../coord/axisHelper":236,"zrender/lib/core/util":357}],199:[function(require,module,exports){
+},{"../../coord/Axis":234,"../../coord/axisHelper":237,"zrender/lib/core/util":358}],200:[function(require,module,exports){
 /**
  * @file Timeline model
  */
@@ -26990,7 +27350,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = TimelineModel;
 
-},{"../../data/List":275,"../../model/Component":283,"../../util/model":312,"zrender/lib/core/util":357}],200:[function(require,module,exports){
+},{"../../data/List":276,"../../model/Component":284,"../../util/model":313,"zrender/lib/core/util":358}],201:[function(require,module,exports){
 /**
  * @file Timeline view
  */
@@ -27006,7 +27366,7 @@ require('zrender/lib/vml/vml');
     });
 
 
-},{"../../view/Component":317}],201:[function(require,module,exports){
+},{"../../view/Component":318}],202:[function(require,module,exports){
 /**
  * @file Timeline preprocessor
  */
@@ -27093,7 +27453,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"zrender/lib/core/util":357}],202:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],203:[function(require,module,exports){
 /**
  * @file Timeilne action
  */
@@ -27139,7 +27499,7 @@ require('zrender/lib/vml/vml');
     );
 
 
-},{"../../echarts":279,"zrender/lib/core/util":357}],203:[function(require,module,exports){
+},{"../../echarts":280,"zrender/lib/core/util":358}],204:[function(require,module,exports){
 
 
     require('../../model/Component').registerSubTypeDefaulter('timeline', function () {
@@ -27148,7 +27508,7 @@ require('zrender/lib/vml/vml');
     });
 
 
-},{"../../model/Component":283}],204:[function(require,module,exports){
+},{"../../model/Component":284}],205:[function(require,module,exports){
 'use strict';
 
 
@@ -27358,7 +27718,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../echarts":279,"../util/graphic":310,"../util/layout":311}],205:[function(require,module,exports){
+},{"../echarts":280,"../util/graphic":311,"../util/layout":312}],206:[function(require,module,exports){
 
 
     require('./toolbox/ToolboxModel');
@@ -27370,7 +27730,7 @@ require('zrender/lib/vml/vml');
     require('./toolbox/feature/DataZoom');
     require('./toolbox/feature/Restore');
 
-},{"./toolbox/ToolboxModel":206,"./toolbox/ToolboxView":207,"./toolbox/feature/DataView":209,"./toolbox/feature/DataZoom":210,"./toolbox/feature/MagicType":211,"./toolbox/feature/Restore":212,"./toolbox/feature/SaveAsImage":213}],206:[function(require,module,exports){
+},{"./toolbox/ToolboxModel":207,"./toolbox/ToolboxView":208,"./toolbox/feature/DataView":211,"./toolbox/feature/DataZoom":212,"./toolbox/feature/MagicType":213,"./toolbox/feature/Restore":214,"./toolbox/feature/SaveAsImage":215}],207:[function(require,module,exports){
 
 
     var featureManager = require('./featureManager');
@@ -27442,7 +27802,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = ToolboxModel;
 
-},{"../../echarts":279,"./featureManager":214,"zrender/lib/core/util":357}],207:[function(require,module,exports){
+},{"../../echarts":280,"./featureManager":209,"zrender/lib/core/util":358}],208:[function(require,module,exports){
 
 
     var featureManager = require('./featureManager');
@@ -27692,7 +28052,23 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"../../data/DataDiffer":273,"../../echarts":279,"../../model/Model":285,"../../util/graphic":310,"../helper/listComponent":168,"./featureManager":214,"zrender/lib/contain/text":341,"zrender/lib/core/util":357}],208:[function(require,module,exports){
+},{"../../data/DataDiffer":274,"../../echarts":280,"../../model/Model":286,"../../util/graphic":311,"../helper/listComponent":169,"./featureManager":209,"zrender/lib/contain/text":342,"zrender/lib/core/util":358}],209:[function(require,module,exports){
+'use strict';
+
+
+    var features = {};
+
+    module.exports = {
+        register: function (name, ctor) {
+            features[name] = ctor;
+        },
+
+        get: function (name) {
+            return features[name];
+        }
+    };
+
+},{}],210:[function(require,module,exports){
 'use strict';
 
 
@@ -27813,7 +28189,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Brush;
 
-},{"../featureManager":214,"zrender/lib/core/util":357}],209:[function(require,module,exports){
+},{"../featureManager":209,"zrender/lib/core/util":358}],211:[function(require,module,exports){
 /**
  * @module echarts/component/toolbox/feature/DataView
  */
@@ -28292,7 +28668,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = DataView;
 
-},{"../../../echarts":279,"../featureManager":214,"zrender/lib/core/event":352,"zrender/lib/core/util":357}],210:[function(require,module,exports){
+},{"../../../echarts":280,"../featureManager":209,"zrender/lib/core/event":353,"zrender/lib/core/util":358}],212:[function(require,module,exports){
 'use strict';
 
 
@@ -28596,7 +28972,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = DataZoom;
 
-},{"../../../echarts":279,"../../dataZoom/history":155,"../../dataZoomSelect":158,"../../helper/BrushController":163,"../../helper/brushHelper":166,"../featureManager":214,"zrender/lib/core/util":357}],211:[function(require,module,exports){
+},{"../../../echarts":280,"../../dataZoom/history":157,"../../dataZoomSelect":144,"../../helper/BrushController":164,"../../helper/brushHelper":167,"../featureManager":209,"zrender/lib/core/util":358}],213:[function(require,module,exports){
 'use strict';
 
 
@@ -28772,7 +29148,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = MagicType;
 
-},{"../../../echarts":279,"../featureManager":214,"zrender/lib/core/util":357}],212:[function(require,module,exports){
+},{"../../../echarts":280,"../featureManager":209,"zrender/lib/core/util":358}],214:[function(require,module,exports){
 'use strict';
 
 
@@ -28812,7 +29188,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Restore;
 
-},{"../../../echarts":279,"../../dataZoom/history":155,"../featureManager":214}],213:[function(require,module,exports){
+},{"../../../echarts":280,"../../dataZoom/history":157,"../featureManager":209}],215:[function(require,module,exports){
 
 
     var env = require('zrender/lib/core/env');
@@ -28880,23 +29256,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = SaveAsImage;
 
-},{"../featureManager":214,"zrender/lib/core/env":351}],214:[function(require,module,exports){
-'use strict';
-
-
-    var features = {};
-
-    module.exports = {
-        register: function (name, ctor) {
-            features[name] = ctor;
-        },
-
-        get: function (name) {
-            return features[name];
-        }
-    };
-
-},{}],215:[function(require,module,exports){
+},{"../featureManager":209,"zrender/lib/core/env":352}],216:[function(require,module,exports){
 // FIXME Better way to pack data in graphic element
 
 
@@ -28933,7 +29293,7 @@ require('zrender/lib/vml/vml');
         function () {}
     );
 
-},{"../echarts":279,"./tooltip/TooltipModel":217,"./tooltip/TooltipView":218}],216:[function(require,module,exports){
+},{"../echarts":280,"./tooltip/TooltipModel":218,"./tooltip/TooltipView":219}],217:[function(require,module,exports){
 /**
  * @module echarts/component/tooltip/TooltipContent
  */
@@ -29176,7 +29536,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = TooltipContent;
 
-},{"../../util/format":309,"zrender/lib/core/env":351,"zrender/lib/core/event":352,"zrender/lib/core/util":357,"zrender/lib/tool/color":388}],217:[function(require,module,exports){
+},{"../../util/format":310,"zrender/lib/core/env":352,"zrender/lib/core/event":353,"zrender/lib/core/util":358,"zrender/lib/tool/color":389}],218:[function(require,module,exports){
 
 
     require('../../echarts').extendComponentModel({
@@ -29284,7 +29644,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../echarts":279}],218:[function(require,module,exports){
+},{"../../echarts":280}],219:[function(require,module,exports){
 
 
     var TooltipContent = require('./TooltipContent');
@@ -30550,7 +30910,7 @@ require('zrender/lib/vml/vml');
         }
     });
 
-},{"../../echarts":279,"../../model/Model":285,"../../util/format":309,"../../util/graphic":310,"../../util/model":312,"../../util/number":313,"./TooltipContent":216,"zrender/lib/core/env":351,"zrender/lib/core/util":357}],219:[function(require,module,exports){
+},{"../../echarts":280,"../../model/Model":286,"../../util/format":310,"../../util/graphic":311,"../../util/model":313,"../../util/number":314,"./TooltipContent":217,"zrender/lib/core/env":352,"zrender/lib/core/util":358}],220:[function(require,module,exports){
 /**
  * visualMap component entry
  */
@@ -30560,7 +30920,41 @@ require('zrender/lib/vml/vml');
     require('./visualMapPiecewise');
 
 
-},{"./visualMapContinuous":231,"./visualMapPiecewise":232}],220:[function(require,module,exports){
+},{"./visualMapContinuous":221,"./visualMapPiecewise":222}],221:[function(require,module,exports){
+/**
+ * DataZoom component entry
+ */
+
+
+    require('../echarts').registerPreprocessor(
+        require('./visualMap/preprocessor')
+    );
+
+    require('./visualMap/typeDefaulter');
+    require('./visualMap/visualEncoding');
+    require('./visualMap/ContinuousModel');
+    require('./visualMap/ContinuousView');
+    require('./visualMap/visualMapAction');
+
+
+},{"../echarts":280,"./visualMap/ContinuousModel":223,"./visualMap/ContinuousView":224,"./visualMap/preprocessor":230,"./visualMap/typeDefaulter":231,"./visualMap/visualEncoding":232,"./visualMap/visualMapAction":233}],222:[function(require,module,exports){
+/**
+ * DataZoom component entry
+ */
+
+
+    require('../echarts').registerPreprocessor(
+        require('./visualMap/preprocessor')
+    );
+
+    require('./visualMap/typeDefaulter');
+    require('./visualMap/visualEncoding');
+    require('./visualMap/PiecewiseModel');
+    require('./visualMap/PiecewiseView');
+    require('./visualMap/visualMapAction');
+
+
+},{"../echarts":280,"./visualMap/PiecewiseModel":225,"./visualMap/PiecewiseView":226,"./visualMap/preprocessor":230,"./visualMap/typeDefaulter":231,"./visualMap/visualEncoding":232,"./visualMap/visualMapAction":233}],223:[function(require,module,exports){
 /**
  * @file Data zoom model
  */
@@ -30810,7 +31204,7 @@ require('zrender/lib/vml/vml');
     module.exports = ContinuousModel;
 
 
-},{"../../util/number":313,"./VisualMapModel":224,"zrender/lib/core/util":357}],221:[function(require,module,exports){
+},{"../../util/number":314,"./VisualMapModel":227,"zrender/lib/core/util":358}],224:[function(require,module,exports){
 
 
     var VisualMapView = require('./VisualMapView');
@@ -31639,7 +32033,7 @@ require('zrender/lib/vml/vml');
     module.exports = ContinuousView;
 
 
-},{"../../util/graphic":310,"../../util/model":312,"../../util/number":313,"../helper/sliderMove":170,"./VisualMapView":225,"./helper":226,"zrender/lib/core/util":357,"zrender/lib/graphic/LinearGradient":364}],222:[function(require,module,exports){
+},{"../../util/graphic":311,"../../util/model":313,"../../util/number":314,"../helper/sliderMove":171,"./VisualMapView":228,"./helper":229,"zrender/lib/core/util":358,"zrender/lib/graphic/LinearGradient":365}],225:[function(require,module,exports){
 
 
     var VisualMapModel = require('./VisualMapModel');
@@ -32168,7 +32562,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = PiecewiseModel;
 
-},{"../../util/number":313,"../../visual/VisualMapping":318,"../../visual/visualDefault":322,"./VisualMapModel":224,"zrender/lib/core/util":357}],223:[function(require,module,exports){
+},{"../../util/number":314,"../../visual/VisualMapping":319,"../../visual/visualDefault":323,"./VisualMapModel":227,"zrender/lib/core/util":358}],226:[function(require,module,exports){
 
 
     var VisualMapView = require('./VisualMapView');
@@ -32392,7 +32786,7 @@ require('zrender/lib/vml/vml');
     module.exports = PiecewiseVisualMapView;
 
 
-},{"../../util/graphic":310,"../../util/layout":311,"../../util/symbol":314,"./VisualMapView":225,"./helper":226,"zrender/lib/core/util":357}],224:[function(require,module,exports){
+},{"../../util/graphic":311,"../../util/layout":312,"../../util/symbol":315,"./VisualMapView":228,"./helper":229,"zrender/lib/core/util":358}],227:[function(require,module,exports){
 /**
  * @file Controller visual map model
  */
@@ -32915,7 +33309,7 @@ require('zrender/lib/vml/vml');
     module.exports = VisualMapModel;
 
 
-},{"../../echarts":279,"../../util/model":312,"../../util/number":313,"../../visual/VisualMapping":318,"../../visual/visualDefault":322,"../../visual/visualSolution":323,"zrender/lib/core/env":351,"zrender/lib/core/util":357}],225:[function(require,module,exports){
+},{"../../echarts":280,"../../util/model":313,"../../util/number":314,"../../visual/VisualMapping":319,"../../visual/visualDefault":323,"../../visual/visualSolution":324,"zrender/lib/core/env":352,"zrender/lib/core/util":358}],228:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -33071,7 +33465,7 @@ require('zrender/lib/vml/vml');
     });
 
 
-},{"../../echarts":279,"../../util/format":309,"../../util/graphic":310,"../../util/layout":311,"../../visual/VisualMapping":318,"zrender/lib/core/util":357}],226:[function(require,module,exports){
+},{"../../echarts":280,"../../util/format":310,"../../util/graphic":311,"../../util/layout":312,"../../visual/VisualMapping":319,"zrender/lib/core/util":358}],229:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -33139,7 +33533,7 @@ require('zrender/lib/vml/vml');
     module.exports = helper;
 
 
-},{"../../util/layout":311,"zrender/lib/core/util":357}],227:[function(require,module,exports){
+},{"../../util/layout":312,"zrender/lib/core/util":358}],230:[function(require,module,exports){
 /**
  * @file VisualMap preprocessor
  */
@@ -33187,7 +33581,7 @@ require('zrender/lib/vml/vml');
     }
 
 
-},{"zrender/lib/core/util":357}],228:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],231:[function(require,module,exports){
 
 
     require('../../model/Component').registerSubTypeDefaulter('visualMap', function (option) {
@@ -33207,7 +33601,7 @@ require('zrender/lib/vml/vml');
     });
 
 
-},{"../../model/Component":283}],229:[function(require,module,exports){
+},{"../../model/Component":284}],232:[function(require,module,exports){
 /**
  * @file Data range visual coding.
  */
@@ -33293,7 +33687,7 @@ require('zrender/lib/vml/vml');
 
 
 
-},{"../../echarts":279,"../../visual/VisualMapping":318,"../../visual/visualSolution":323,"zrender/lib/core/util":357}],230:[function(require,module,exports){
+},{"../../echarts":280,"../../visual/VisualMapping":319,"../../visual/visualSolution":324,"zrender/lib/core/util":358}],233:[function(require,module,exports){
 /**
  * @file Data range action
  */
@@ -33317,41 +33711,7 @@ require('zrender/lib/vml/vml');
     });
 
 
-},{"../../echarts":279}],231:[function(require,module,exports){
-/**
- * DataZoom component entry
- */
-
-
-    require('../echarts').registerPreprocessor(
-        require('./visualMap/preprocessor')
-    );
-
-    require('./visualMap/typeDefaulter');
-    require('./visualMap/visualEncoding');
-    require('./visualMap/ContinuousModel');
-    require('./visualMap/ContinuousView');
-    require('./visualMap/visualMapAction');
-
-
-},{"../echarts":279,"./visualMap/ContinuousModel":220,"./visualMap/ContinuousView":221,"./visualMap/preprocessor":227,"./visualMap/typeDefaulter":228,"./visualMap/visualEncoding":229,"./visualMap/visualMapAction":230}],232:[function(require,module,exports){
-/**
- * DataZoom component entry
- */
-
-
-    require('../echarts').registerPreprocessor(
-        require('./visualMap/preprocessor')
-    );
-
-    require('./visualMap/typeDefaulter');
-    require('./visualMap/visualEncoding');
-    require('./visualMap/PiecewiseModel');
-    require('./visualMap/PiecewiseView');
-    require('./visualMap/visualMapAction');
-
-
-},{"../echarts":279,"./visualMap/PiecewiseModel":222,"./visualMap/PiecewiseView":223,"./visualMap/preprocessor":227,"./visualMap/typeDefaulter":228,"./visualMap/visualEncoding":229,"./visualMap/visualMapAction":230}],233:[function(require,module,exports){
+},{"../../echarts":280}],234:[function(require,module,exports){
 
 
     var numberUtil = require('../util/number');
@@ -33589,7 +33949,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Axis;
 
-},{"../util/number":313,"zrender/lib/core/util":357}],234:[function(require,module,exports){
+},{"../util/number":314,"zrender/lib/core/util":358}],235:[function(require,module,exports){
 /**
  * Simple view coordinate system
  * Mapping given x, y to transformd view x, y
@@ -33886,7 +34246,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = View;
 
-},{"zrender/lib/core/BoundingRect":345,"zrender/lib/core/matrix":355,"zrender/lib/core/util":357,"zrender/lib/core/vector":358,"zrender/lib/mixin/Transformable":387}],235:[function(require,module,exports){
+},{"zrender/lib/core/BoundingRect":346,"zrender/lib/core/matrix":356,"zrender/lib/core/util":358,"zrender/lib/core/vector":359,"zrender/lib/mixin/Transformable":388}],236:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -34040,7 +34400,7 @@ require('zrender/lib/vml/vml');
         logAxis: logAxis
     };
 
-},{"zrender/lib/core/util":357}],236:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],237:[function(require,module,exports){
 
 
     var OrdinalScale = require('../scale/Ordinal');
@@ -34286,7 +34646,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = axisHelper;
 
-},{"../scale/Interval":300,"../scale/Log":301,"../scale/Ordinal":302,"../scale/Scale":303,"../scale/Time":304,"../util/number":313,"zrender/lib/contain/text":341,"zrender/lib/core/util":357}],237:[function(require,module,exports){
+},{"../scale/Interval":301,"../scale/Log":302,"../scale/Ordinal":303,"../scale/Scale":304,"../scale/Time":305,"../util/number":314,"zrender/lib/contain/text":342,"zrender/lib/core/util":358}],238:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -34385,7 +34745,7 @@ require('zrender/lib/vml/vml');
         }
     };
 
-},{"./axisHelper":236,"zrender/lib/core/util":357}],238:[function(require,module,exports){
+},{"./axisHelper":237,"zrender/lib/core/util":358}],239:[function(require,module,exports){
 
 
     var axisDefault = require('./axisDefault');
@@ -34444,7 +34804,7 @@ require('zrender/lib/vml/vml');
         );
     };
 
-},{"../model/Component":283,"../util/layout":311,"./axisDefault":235,"zrender/lib/core/util":357}],239:[function(require,module,exports){
+},{"../model/Component":284,"../util/layout":312,"./axisDefault":236,"zrender/lib/core/util":358}],240:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -34562,7 +34922,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Axis2D;
 
-},{"../Axis":233,"./axisLabelInterval":245,"zrender/lib/core/util":357}],240:[function(require,module,exports){
+},{"../Axis":234,"./axisLabelInterval":246,"zrender/lib/core/util":358}],241:[function(require,module,exports){
 'use strict';
 
 
@@ -34637,7 +34997,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = AxisModel;
 
-},{"../../model/Component":283,"../axisModelCommonMixin":237,"../axisModelCreator":238,"zrender/lib/core/util":357}],241:[function(require,module,exports){
+},{"../../model/Component":284,"../axisModelCommonMixin":238,"../axisModelCreator":239,"zrender/lib/core/util":358}],242:[function(require,module,exports){
 'use strict';
 /**
  * Cartesian coordinate system
@@ -34751,7 +35111,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Cartesian;
 
-},{"zrender/lib/core/util":357}],242:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],243:[function(require,module,exports){
 'use strict';
 
 
@@ -34863,7 +35223,7 @@ require('zrender/lib/vml/vml');
 
     module.exports = Cartesian2D;
 
-},{"./Cartesian":241,"zrender/lib/core/util":357}],243:[function(require,module,exports){
+},{"./Cartesian":242,"zrender/lib/core/util":358}],244:[function(require,module,exports){
 /**
  * Grid is a region which contains at most 4 cartesian systems
  *
@@ -35426,7 +35786,7 @@ var factory = exports;
 
     module.exports = Grid;
 
-},{"../../CoordinateSystem":3,"../../coord/axisHelper":236,"../../util/layout":311,"./Axis2D":239,"./Cartesian2D":242,"./GridModel":244,"zrender/lib/core/util":357}],244:[function(require,module,exports){
+},{"../../CoordinateSystem":4,"../../coord/axisHelper":237,"../../util/layout":312,"./Axis2D":240,"./Cartesian2D":243,"./GridModel":245,"zrender/lib/core/util":358}],245:[function(require,module,exports){
 'use strict';
 // Grid 是在有直角坐标系的时候必须要存在的
 // 所以这里也要被 Cartesian2D 依赖
@@ -35466,7 +35826,7 @@ var factory = exports;
         }
     });
 
-},{"../../model/Component":283,"./AxisModel":240}],245:[function(require,module,exports){
+},{"../../model/Component":284,"./AxisModel":241}],246:[function(require,module,exports){
 'use strict';
 /**
  * Helper function for axisLabelInterval calculation
@@ -35493,7 +35853,7 @@ var factory = exports;
         );
     };
 
-},{"../axisHelper":236,"zrender/lib/core/util":357}],246:[function(require,module,exports){
+},{"../axisHelper":237,"zrender/lib/core/util":358}],247:[function(require,module,exports){
 
 
     var parseGeoJson = require('./parseGeoJson');
@@ -35755,7 +36115,7 @@ var factory = exports;
 
     module.exports = Geo;
 
-},{"../View":234,"./fix/geoCoord":249,"./fix/nanhai":250,"./fix/textCoord":251,"./parseGeoJson":253,"zrender/lib/core/BoundingRect":345,"zrender/lib/core/util":357}],247:[function(require,module,exports){
+},{"../View":235,"./fix/geoCoord":250,"./fix/nanhai":251,"./fix/textCoord":252,"./parseGeoJson":254,"zrender/lib/core/BoundingRect":346,"zrender/lib/core/util":358}],248:[function(require,module,exports){
 'use strict';
 
     var modelUtil = require('../../util/model');
@@ -35919,7 +36279,7 @@ var factory = exports;
 
     module.exports = GeoModel;
 
-},{"../../component/helper/selectableMixin":169,"../../model/Component":283,"../../model/Model":285,"../../util/model":312,"./geoCreator":252,"zrender/lib/core/util":357}],248:[function(require,module,exports){
+},{"../../component/helper/selectableMixin":170,"../../model/Component":284,"../../model/Model":286,"../../util/model":313,"./geoCreator":253,"zrender/lib/core/util":358}],249:[function(require,module,exports){
 /**
  * @module echarts/coord/geo/Region
  */
@@ -36047,7 +36407,7 @@ var factory = exports;
 
     module.exports = Region;
 
-},{"zrender/lib/contain/polygon":339,"zrender/lib/core/BoundingRect":345,"zrender/lib/core/bbox":349,"zrender/lib/core/vector":358}],249:[function(require,module,exports){
+},{"zrender/lib/contain/polygon":340,"zrender/lib/core/BoundingRect":346,"zrender/lib/core/bbox":350,"zrender/lib/core/vector":359}],250:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -36068,7 +36428,7 @@ var factory = exports;
         });
     };
 
-},{"zrender/lib/core/util":357}],250:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],251:[function(require,module,exports){
 // Fix for 南海诸岛
 
 
@@ -36109,7 +36469,7 @@ var factory = exports;
         }
     };
 
-},{"../Region":248}],251:[function(require,module,exports){
+},{"../Region":249}],252:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -36135,7 +36495,7 @@ var factory = exports;
         });
     };
 
-},{"zrender/lib/core/util":357}],252:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],253:[function(require,module,exports){
 
 
     var Geo = require('./Geo');
@@ -36414,7 +36774,7 @@ var factory = exports;
 
     module.exports = geoCreator;
 
-},{"../../echarts":279,"../../util/layout":311,"../../util/number":313,"./Geo":246,"zrender/lib/core/util":357}],253:[function(require,module,exports){
+},{"../../echarts":280,"../../util/layout":312,"../../util/number":314,"./Geo":247,"zrender/lib/core/util":358}],254:[function(require,module,exports){
 /**
  * Parse and decode geo json
  * @module echarts/coord/geo/parseGeoJson
@@ -36529,7 +36889,7 @@ var factory = exports;
         });
     };
 
-},{"./Region":248,"zrender/lib/core/util":357}],254:[function(require,module,exports){
+},{"./Region":249,"zrender/lib/core/util":358}],255:[function(require,module,exports){
 
 
     var ComponentModel = require('../../model/Component');
@@ -36652,7 +37012,7 @@ var factory = exports;
 
     module.exports = AxisModel;
 
-},{"../../model/Component":283,"../../model/mixin/makeStyleMapper":294,"../../util/number":313,"../axisModelCommonMixin":237,"../axisModelCreator":238,"zrender/lib/core/util":357}],255:[function(require,module,exports){
+},{"../../model/Component":284,"../../model/mixin/makeStyleMapper":295,"../../util/number":314,"../axisModelCommonMixin":238,"../axisModelCreator":239,"zrender/lib/core/util":358}],256:[function(require,module,exports){
 /**
  * Parallel Coordinates
  * <https://en.wikipedia.org/wiki/Parallel_coordinates>
@@ -37045,7 +37405,7 @@ var factory = exports;
 
     module.exports = Parallel;
 
-},{"../../coord/axisHelper":236,"../../util/graphic":310,"../../util/layout":311,"./ParallelAxis":256,"zrender/lib/core/matrix":355,"zrender/lib/core/util":357}],256:[function(require,module,exports){
+},{"../../coord/axisHelper":237,"../../util/graphic":311,"../../util/layout":312,"./ParallelAxis":257,"zrender/lib/core/matrix":356,"zrender/lib/core/util":358}],257:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -37096,7 +37456,7 @@ var factory = exports;
 
     module.exports = ParallelAxis;
 
-},{"../Axis":233,"zrender/lib/core/util":357}],257:[function(require,module,exports){
+},{"../Axis":234,"zrender/lib/core/util":358}],258:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -37218,7 +37578,7 @@ var factory = exports;
     });
 
 
-},{"../../model/Component":283,"./AxisModel":254,"zrender/lib/core/util":357}],258:[function(require,module,exports){
+},{"../../model/Component":284,"./AxisModel":255,"zrender/lib/core/util":358}],259:[function(require,module,exports){
 /**
  * Parallel coordinate system creater.
  */
@@ -37259,7 +37619,7 @@ var factory = exports;
     require('../../CoordinateSystem').register('parallel', {create: create});
 
 
-},{"../../CoordinateSystem":3,"./Parallel":255}],259:[function(require,module,exports){
+},{"../../CoordinateSystem":4,"./Parallel":256}],260:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -37314,7 +37674,7 @@ var factory = exports;
     }
 
 
-},{"../../util/model":312,"zrender/lib/core/util":357}],260:[function(require,module,exports){
+},{"../../util/model":313,"zrender/lib/core/util":358}],261:[function(require,module,exports){
 'use strict';
 
 
@@ -37351,7 +37711,7 @@ var factory = exports;
 
     module.exports = AngleAxis;
 
-},{"../Axis":233,"zrender/lib/core/util":357}],261:[function(require,module,exports){
+},{"../Axis":234,"zrender/lib/core/util":358}],262:[function(require,module,exports){
 'use strict';
 
 
@@ -37415,7 +37775,7 @@ var factory = exports;
     axisModelCreator('radius', PolarAxisModel, getAxisType, polarAxisDefaultExtendedOption.radius);
 
 
-},{"../../model/Component":283,"../axisModelCommonMixin":237,"../axisModelCreator":238,"zrender/lib/core/util":357}],262:[function(require,module,exports){
+},{"../../model/Component":284,"../axisModelCommonMixin":238,"../axisModelCreator":239,"zrender/lib/core/util":358}],263:[function(require,module,exports){
 'use strict';
 /**
  * @module echarts/coord/polar/Polar
@@ -37644,7 +38004,7 @@ var factory = exports;
 
     module.exports = Polar;
 
-},{"./AngleAxis":260,"./RadiusAxis":264}],263:[function(require,module,exports){
+},{"./AngleAxis":261,"./RadiusAxis":265}],264:[function(require,module,exports){
 'use strict';
 
 
@@ -37689,7 +38049,7 @@ var factory = exports;
         }
     });
 
-},{"../../echarts":279,"./AxisModel":261}],264:[function(require,module,exports){
+},{"../../echarts":280,"./AxisModel":262}],265:[function(require,module,exports){
 'use strict';
 
 
@@ -37724,7 +38084,7 @@ var factory = exports;
 
     module.exports = RadiusAxis;
 
-},{"../Axis":233,"zrender/lib/core/util":357}],265:[function(require,module,exports){
+},{"../Axis":234,"zrender/lib/core/util":358}],266:[function(require,module,exports){
 // TODO Axis scale
 
 
@@ -37870,7 +38230,7 @@ var factory = exports;
 
     require('../../CoordinateSystem').register('polar', polarCreator);
 
-},{"../../CoordinateSystem":3,"../../coord/axisHelper":236,"../../util/number":313,"./Polar":262,"./PolarModel":263,"zrender/lib/core/util":357}],266:[function(require,module,exports){
+},{"../../CoordinateSystem":4,"../../coord/axisHelper":237,"../../util/number":314,"./Polar":263,"./PolarModel":264,"zrender/lib/core/util":358}],267:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -37906,7 +38266,7 @@ var factory = exports;
 
     module.exports = IndicatorAxis;
 
-},{"../Axis":233,"zrender/lib/core/util":357}],267:[function(require,module,exports){
+},{"../Axis":234,"zrender/lib/core/util":358}],268:[function(require,module,exports){
 // TODO clockwise
 
 
@@ -38141,7 +38501,7 @@ var factory = exports;
     require('../../CoordinateSystem').register('radar', Radar);
     module.exports = Radar;
 
-},{"../../CoordinateSystem":3,"../../scale/Interval":300,"../../util/number":313,"../axisHelper":236,"./IndicatorAxis":266,"zrender/lib/core/util":357}],268:[function(require,module,exports){
+},{"../../CoordinateSystem":4,"../../scale/Interval":301,"../../util/number":314,"../axisHelper":237,"./IndicatorAxis":267,"zrender/lib/core/util":358}],269:[function(require,module,exports){
 
 
 
@@ -38277,7 +38637,7 @@ var factory = exports;
 
     module.exports = RadarModel;
 
-},{"../../echarts":279,"../../model/Model":285,"../axisDefault":235,"../axisModelCommonMixin":237,"zrender/lib/core/util":357}],269:[function(require,module,exports){
+},{"../../echarts":280,"../../model/Model":286,"../axisDefault":236,"../axisModelCommonMixin":238,"zrender/lib/core/util":358}],270:[function(require,module,exports){
 
 
     var ComponentModel = require('../../model/Component');
@@ -38362,7 +38722,7 @@ var factory = exports;
 
     module.exports = AxisModel;
 
-},{"../../model/Component":283,"../axisModelCommonMixin":237,"../axisModelCreator":238,"zrender/lib/core/util":357}],270:[function(require,module,exports){
+},{"../../model/Component":284,"../axisModelCommonMixin":238,"../axisModelCreator":239,"zrender/lib/core/util":358}],271:[function(require,module,exports){
 /**
  * Single coordinates system.
  */
@@ -38615,7 +38975,7 @@ var factory = exports;
     module.exports = Single;
 
 
-},{"../../util/layout":311,"../axisHelper":236,"./SingleAxis":271}],271:[function(require,module,exports){
+},{"../../util/layout":312,"../axisHelper":237,"./SingleAxis":272}],272:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -38737,7 +39097,7 @@ var factory = exports;
 
     module.exports = SingleAxis;
 
-},{"../Axis":233,"../axisHelper":236,"zrender/lib/core/util":357}],272:[function(require,module,exports){
+},{"../Axis":234,"../axisHelper":237,"zrender/lib/core/util":358}],273:[function(require,module,exports){
 /**
  * Single coordinate system creator.
  */
@@ -38784,7 +39144,7 @@ var factory = exports;
         dimensions: Single.prototype.dimensions
     });
 
-},{"../../CoordinateSystem":3,"./Single":270}],273:[function(require,module,exports){
+},{"../../CoordinateSystem":4,"./Single":271}],274:[function(require,module,exports){
 'use strict';
 
 
@@ -38909,7 +39269,7 @@ var factory = exports;
 
     module.exports = DataDiffer;
 
-},{}],274:[function(require,module,exports){
+},{}],275:[function(require,module,exports){
 'use strict';
 /**
  * Graph data structure
@@ -39424,7 +39784,7 @@ var factory = exports;
 
     module.exports = Graph;
 
-},{"zrender/lib/core/util":357}],275:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],276:[function(require,module,exports){
 (function (global){
 /**
  * List for data storage
@@ -40570,7 +40930,7 @@ var factory = exports;
     module.exports = List;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../model/Model":285,"../util/model":312,"./DataDiffer":273,"zrender/lib/core/util":357}],276:[function(require,module,exports){
+},{"../model/Model":286,"../util/model":313,"./DataDiffer":274,"zrender/lib/core/util":358}],277:[function(require,module,exports){
 /**
  * Tree data structure
  *
@@ -41043,7 +41403,7 @@ var factory = exports;
 
     module.exports = Tree;
 
-},{"../model/Model":285,"./List":275,"./helper/completeDimensions":277,"./helper/linkList":278,"zrender/lib/core/util":357}],277:[function(require,module,exports){
+},{"../model/Model":286,"./List":276,"./helper/completeDimensions":278,"./helper/linkList":279,"zrender/lib/core/util":358}],278:[function(require,module,exports){
 /**
  * Complete dimensions by data (guess dimension).
  */
@@ -41109,7 +41469,7 @@ var factory = exports;
     module.exports = completeDimensions;
 
 
-},{"zrender/lib/core/util":357}],278:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],279:[function(require,module,exports){
 /**
  * Link lists and struct (graph or tree)
  */
@@ -41243,7 +41603,7 @@ var factory = exports;
 
     module.exports = linkList;
 
-},{"zrender/lib/core/util":357}],279:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],280:[function(require,module,exports){
 (function (global){
 // Enable DEV mode when using source code without build. which has no __DEV__ variable
 // In build process 'typeof __DEV__' will be replace with 'boolean'
@@ -43125,7 +43485,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = echarts;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./CoordinateSystem":3,"./ExtensionAPI":4,"./data/List":275,"./loading/default":282,"./model/Component":283,"./model/Global":284,"./model/Model":285,"./model/OptionManager":286,"./model/Series":287,"./preprocessor/backwardCompat":296,"./util/format":309,"./util/graphic":310,"./util/model":312,"./util/number":313,"./util/throttle":315,"./view/Chart":316,"./view/Component":317,"./visual/seriesColor":320,"zrender":395,"zrender/lib/core/env":351,"zrender/lib/core/matrix":355,"zrender/lib/core/timsort":356,"zrender/lib/core/util":357,"zrender/lib/core/vector":358,"zrender/lib/mixin/Eventful":386,"zrender/lib/tool/color":388}],280:[function(require,module,exports){
+},{"./CoordinateSystem":4,"./ExtensionAPI":5,"./data/List":276,"./loading/default":283,"./model/Component":284,"./model/Global":285,"./model/Model":286,"./model/OptionManager":287,"./model/Series":288,"./preprocessor/backwardCompat":297,"./util/format":310,"./util/graphic":311,"./util/model":313,"./util/number":314,"./util/throttle":316,"./view/Chart":317,"./view/Component":318,"./visual/seriesColor":321,"zrender":396,"zrender/lib/core/env":352,"zrender/lib/core/matrix":356,"zrender/lib/core/timsort":357,"zrender/lib/core/util":358,"zrender/lib/core/vector":359,"zrender/lib/mixin/Eventful":387,"zrender/lib/tool/color":389}],281:[function(require,module,exports){
 'use strict';
 
 
@@ -43373,7 +43733,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = barLayoutGrid;
 
-},{"../util/number":313,"zrender/lib/core/util":357}],281:[function(require,module,exports){
+},{"../util/number":314,"zrender/lib/core/util":358}],282:[function(require,module,exports){
 
 
     module.exports = function (seriesType, ecModel) {
@@ -43402,7 +43762,7 @@ if (typeof __DEV__ === 'undefined') {
         });
     };
 
-},{}],282:[function(require,module,exports){
+},{}],283:[function(require,module,exports){
 
 
     var graphic = require('../util/graphic');
@@ -43501,7 +43861,7 @@ if (typeof __DEV__ === 'undefined') {
         return group;
     };
 
-},{"../util/graphic":310,"zrender/lib/core/util":357}],283:[function(require,module,exports){
+},{"../util/graphic":311,"zrender/lib/core/util":358}],284:[function(require,module,exports){
 /**
  * Component model
  *
@@ -43696,7 +44056,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = ComponentModel;
 
-},{"../util/clazz":307,"../util/component":308,"../util/layout":311,"./Model":285,"./mixin/boxLayout":290,"zrender/lib/core/util":357}],284:[function(require,module,exports){
+},{"../util/clazz":308,"../util/component":309,"../util/layout":312,"./Model":286,"./mixin/boxLayout":291,"zrender/lib/core/util":358}],285:[function(require,module,exports){
 /**
  * ECharts global model
  *
@@ -44404,7 +44764,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = GlobalModel;
 
-},{"../util/model":312,"./Component":283,"./Model":285,"./globalDefault":288,"./mixin/colorPalette":291,"zrender/lib/core/util":357}],285:[function(require,module,exports){
+},{"../util/model":313,"./Component":284,"./Model":286,"./globalDefault":289,"./mixin/colorPalette":292,"zrender/lib/core/util":358}],286:[function(require,module,exports){
 /**
  * @module echarts/model/Model
  */
@@ -44602,7 +44962,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Model;
 
-},{"../util/clazz":307,"./mixin/areaStyle":289,"./mixin/itemStyle":292,"./mixin/lineStyle":293,"./mixin/textStyle":295,"zrender/lib/core/env":351,"zrender/lib/core/util":357}],286:[function(require,module,exports){
+},{"../util/clazz":308,"./mixin/areaStyle":290,"./mixin/itemStyle":293,"./mixin/lineStyle":294,"./mixin/textStyle":296,"zrender/lib/core/env":352,"zrender/lib/core/util":358}],287:[function(require,module,exports){
 /**
  * ECharts option manager
  *
@@ -45038,7 +45398,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = OptionManager;
 
-},{"../util/model":312,"./Component":283,"zrender/lib/core/util":357}],287:[function(require,module,exports){
+},{"../util/model":313,"./Component":284,"zrender/lib/core/util":358}],288:[function(require,module,exports){
 'use strict';
 
 
@@ -45363,7 +45723,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = SeriesModel;
 
-},{"../util/clazz":307,"../util/format":309,"../util/layout":311,"../util/model":312,"./Component":283,"./mixin/colorPalette":291,"zrender/lib/core/env":351,"zrender/lib/core/util":357}],288:[function(require,module,exports){
+},{"../util/clazz":308,"../util/format":310,"../util/layout":312,"../util/model":313,"./Component":284,"./mixin/colorPalette":292,"zrender/lib/core/env":352,"zrender/lib/core/util":358}],289:[function(require,module,exports){
 
     var platform = '';
     // Navigator not exists in node
@@ -45420,7 +45780,7 @@ if (typeof __DEV__ === 'undefined') {
         hoverLayerThreshold: 3000
     };
 
-},{}],289:[function(require,module,exports){
+},{}],290:[function(require,module,exports){
 
     module.exports = {
         getAreaStyle: require('./makeStyleMapper')(
@@ -45435,7 +45795,7 @@ if (typeof __DEV__ === 'undefined') {
         )
     };
 
-},{"./makeStyleMapper":294}],290:[function(require,module,exports){
+},{"./makeStyleMapper":295}],291:[function(require,module,exports){
 
 
     module.exports = {
@@ -45451,7 +45811,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{}],291:[function(require,module,exports){
+},{}],292:[function(require,module,exports){
 
 
     var classUtil = require('../../util/clazz');
@@ -45486,7 +45846,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{"../../util/clazz":307}],292:[function(require,module,exports){
+},{"../../util/clazz":308}],293:[function(require,module,exports){
 
     var getItemStyle = require('./makeStyleMapper')(
         [
@@ -45517,7 +45877,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{"./makeStyleMapper":294}],293:[function(require,module,exports){
+},{"./makeStyleMapper":295}],294:[function(require,module,exports){
 
     var getLineStyle = require('./makeStyleMapper')(
         [
@@ -45550,7 +45910,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{"./makeStyleMapper":294}],294:[function(require,module,exports){
+},{"./makeStyleMapper":295}],295:[function(require,module,exports){
 // TODO Parse shadow style
 // TODO Only shallow path support
 
@@ -45579,7 +45939,7 @@ if (typeof __DEV__ === 'undefined') {
         };
     };
 
-},{"zrender/lib/core/util":357}],295:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],296:[function(require,module,exports){
 
 
     var textContain = require('zrender/lib/contain/text');
@@ -45631,7 +45991,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{"zrender/lib/contain/text":341}],296:[function(require,module,exports){
+},{"zrender/lib/contain/text":342}],297:[function(require,module,exports){
 // Compatitable with 2.0
 
 
@@ -45737,7 +46097,7 @@ if (typeof __DEV__ === 'undefined') {
         });
     };
 
-},{"./helper/compatStyle":297,"zrender/lib/core/util":357}],297:[function(require,module,exports){
+},{"./helper/compatStyle":298,"zrender/lib/core/util":358}],298:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -45814,7 +46174,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{"zrender/lib/core/util":357}],298:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],299:[function(require,module,exports){
 
     module.exports = function (seriesType, ecModel) {
         var legendModels = ecModel.findComponents({
@@ -45838,7 +46198,7 @@ if (typeof __DEV__ === 'undefined') {
         }, this);
     };
 
-},{}],299:[function(require,module,exports){
+},{}],300:[function(require,module,exports){
 
     var samplers = {
         average: function (frame) {
@@ -45917,7 +46277,7 @@ if (typeof __DEV__ === 'undefined') {
         }, this);
     };
 
-},{}],300:[function(require,module,exports){
+},{}],301:[function(require,module,exports){
 /**
  * Interval scale
  * @module echarts/scale/Interval
@@ -46147,7 +46507,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = IntervalScale;
 
 
-},{"../util/format":309,"../util/number":313,"./Scale":303}],301:[function(require,module,exports){
+},{"../util/format":310,"../util/number":314,"./Scale":304}],302:[function(require,module,exports){
 /**
  * Log scale
  * @module echarts/scale/Log
@@ -46339,7 +46699,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = LogScale;
 
-},{"../util/number":313,"./Interval":300,"./Scale":303,"zrender/lib/core/util":357}],302:[function(require,module,exports){
+},{"../util/number":314,"./Interval":301,"./Scale":304,"zrender/lib/core/util":358}],303:[function(require,module,exports){
 /**
  * Linear continuous scale
  * @module echarts/coord/scale/Ordinal
@@ -46442,7 +46802,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = OrdinalScale;
 
-},{"./Scale":303,"zrender/lib/core/util":357}],303:[function(require,module,exports){
+},{"./Scale":304,"zrender/lib/core/util":358}],304:[function(require,module,exports){
 /**
  * // Scale class management
  * @module echarts/scale/Scale
@@ -46575,7 +46935,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Scale;
 
-},{"../util/clazz":307}],304:[function(require,module,exports){
+},{"../util/clazz":308}],305:[function(require,module,exports){
 /**
  * Interval scale
  * @module echarts/coord/scale/Time
@@ -46737,7 +47097,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = TimeScale;
 
-},{"../util/format":309,"../util/number":313,"./Interval":300,"zrender/lib/core/util":357}],305:[function(require,module,exports){
+},{"../util/format":310,"../util/number":314,"./Interval":301,"zrender/lib/core/util":358}],306:[function(require,module,exports){
  
 
     var zrUtil = require('zrender/lib/core/util');
@@ -46839,7 +47199,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = {createWrap: createWrap};
 
-},{"zrender/lib/core/util":357}],306:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],307:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -46946,7 +47306,7 @@ if (typeof __DEV__ === 'undefined') {
     }
     module.exports = nest;
 
-},{"zrender/lib/core/util":357}],307:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],308:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -47214,7 +47574,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = clazz;
 
-},{"zrender/lib/core/util":357}],308:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],309:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -47391,7 +47751,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = componentUtil;
 
-},{"./clazz":307,"zrender/lib/core/util":357}],309:[function(require,module,exports){
+},{"./clazz":308,"zrender/lib/core/util":358}],310:[function(require,module,exports){
 
 
     var zrUtil = require('zrender/lib/core/util');
@@ -47566,7 +47926,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = formatUtil;
 
-},{"./number":313,"zrender/lib/contain/text":341,"zrender/lib/core/util":357}],310:[function(require,module,exports){
+},{"./number":314,"zrender/lib/contain/text":342,"zrender/lib/core/util":358}],311:[function(require,module,exports){
 'use strict';
 
 
@@ -48148,7 +48508,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = graphic;
 
 
-},{"zrender/lib/container/Group":344,"zrender/lib/core/BoundingRect":345,"zrender/lib/core/matrix":355,"zrender/lib/core/util":357,"zrender/lib/core/vector":358,"zrender/lib/graphic/CompoundPath":360,"zrender/lib/graphic/Image":363,"zrender/lib/graphic/LinearGradient":364,"zrender/lib/graphic/Path":365,"zrender/lib/graphic/RadialGradient":367,"zrender/lib/graphic/Text":369,"zrender/lib/graphic/shape/Arc":375,"zrender/lib/graphic/shape/BezierCurve":376,"zrender/lib/graphic/shape/Circle":377,"zrender/lib/graphic/shape/Line":378,"zrender/lib/graphic/shape/Polygon":379,"zrender/lib/graphic/shape/Polyline":380,"zrender/lib/graphic/shape/Rect":381,"zrender/lib/graphic/shape/Ring":382,"zrender/lib/graphic/shape/Sector":383,"zrender/lib/tool/color":388,"zrender/lib/tool/path":389}],311:[function(require,module,exports){
+},{"zrender/lib/container/Group":345,"zrender/lib/core/BoundingRect":346,"zrender/lib/core/matrix":356,"zrender/lib/core/util":358,"zrender/lib/core/vector":359,"zrender/lib/graphic/CompoundPath":361,"zrender/lib/graphic/Image":364,"zrender/lib/graphic/LinearGradient":365,"zrender/lib/graphic/Path":366,"zrender/lib/graphic/RadialGradient":368,"zrender/lib/graphic/Text":370,"zrender/lib/graphic/shape/Arc":376,"zrender/lib/graphic/shape/BezierCurve":377,"zrender/lib/graphic/shape/Circle":378,"zrender/lib/graphic/shape/Line":379,"zrender/lib/graphic/shape/Polygon":380,"zrender/lib/graphic/shape/Polyline":381,"zrender/lib/graphic/shape/Rect":382,"zrender/lib/graphic/shape/Ring":383,"zrender/lib/graphic/shape/Sector":384,"zrender/lib/tool/color":389,"zrender/lib/tool/path":390}],312:[function(require,module,exports){
 'use strict';
 // Layout helpers for each component positioning
 
@@ -48598,7 +48958,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = layout;
 
-},{"./format":309,"./number":313,"zrender/lib/core/BoundingRect":345,"zrender/lib/core/util":357}],312:[function(require,module,exports){
+},{"./format":310,"./number":314,"zrender/lib/core/BoundingRect":346,"zrender/lib/core/util":358}],313:[function(require,module,exports){
 
 
     var formatUtil = require('./format');
@@ -49167,7 +49527,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = modelUtil;
 
-},{"../model/Model":285,"./format":309,"./number":313,"zrender/lib/core/util":357}],313:[function(require,module,exports){
+},{"../model/Model":286,"./format":310,"./number":314,"zrender/lib/core/util":358}],314:[function(require,module,exports){
 /**
  * 数值处理模块
  * @module echarts/util/number
@@ -49496,7 +49856,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = number;
 
-},{}],314:[function(require,module,exports){
+},{}],315:[function(require,module,exports){
 'use strict';
 // Symbol factory
 
@@ -49852,7 +50212,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = symbolUtil;
 
-},{"./graphic":310,"zrender/lib/core/BoundingRect":345}],315:[function(require,module,exports){
+},{"./graphic":311,"zrender/lib/core/BoundingRect":346}],316:[function(require,module,exports){
 
 
     var lib = {};
@@ -49996,7 +50356,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = lib;
 
 
-},{}],316:[function(require,module,exports){
+},{}],317:[function(require,module,exports){
 
 
     var Group = require('zrender/lib/container/Group');
@@ -50140,7 +50500,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Chart;
 
-},{"../util/clazz":307,"../util/component":308,"../util/model":312,"zrender/lib/container/Group":344,"zrender/lib/core/util":357}],317:[function(require,module,exports){
+},{"../util/clazz":308,"../util/component":309,"../util/model":313,"zrender/lib/container/Group":345,"zrender/lib/core/util":358}],318:[function(require,module,exports){
 
 
     var Group = require('zrender/lib/container/Group');
@@ -50188,7 +50548,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Component;
 
-},{"../util/clazz":307,"../util/component":308,"zrender/lib/container/Group":344}],318:[function(require,module,exports){
+},{"../util/clazz":308,"../util/component":309,"zrender/lib/container/Group":345}],319:[function(require,module,exports){
 /**
  * @file Visual mapping.
  */
@@ -50786,7 +51146,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = VisualMapping;
 
 
-},{"../util/number":313,"zrender/lib/core/util":357,"zrender/lib/tool/color":388}],319:[function(require,module,exports){
+},{"../util/number":314,"zrender/lib/core/util":358,"zrender/lib/tool/color":389}],320:[function(require,module,exports){
 // Pick color from palette for each data item.
 // Applicable for charts that require applying color palette
 // in data level (like pie, funnel, chord).
@@ -50833,7 +51193,7 @@ if (typeof __DEV__ === 'undefined') {
         });
     };
 
-},{}],320:[function(require,module,exports){
+},{}],321:[function(require,module,exports){
 
     var Gradient = require('zrender/lib/graphic/Gradient');
     module.exports = function (ecModel) {
@@ -50869,7 +51229,7 @@ if (typeof __DEV__ === 'undefined') {
         ecModel.eachRawSeries(encodeColor);
     };
 
-},{"zrender/lib/graphic/Gradient":362}],321:[function(require,module,exports){
+},{"zrender/lib/graphic/Gradient":363}],322:[function(require,module,exports){
 
 
     module.exports = function (seriesType, defaultSymbolType, legendSymbol, ecModel, api) {
@@ -50914,7 +51274,7 @@ if (typeof __DEV__ === 'undefined') {
         });
     };
 
-},{}],322:[function(require,module,exports){
+},{}],323:[function(require,module,exports){
 /**
  * @file Visual mapping.
  */
@@ -50986,7 +51346,7 @@ if (typeof __DEV__ === 'undefined') {
 
 
 
-},{"zrender/lib/core/util":357}],323:[function(require,module,exports){
+},{"zrender/lib/core/util":358}],324:[function(require,module,exports){
 /**
  * @file Visual solution, for consistent option specification.
  */
@@ -51137,7 +51497,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = visualSolution;
 
 
-},{"./VisualMapping":318,"zrender/lib/core/util":357}],324:[function(require,module,exports){
+},{"./VisualMapping":319,"zrender/lib/core/util":358}],325:[function(require,module,exports){
 'use strict';
 /**
  * @module zrender/Element
@@ -51401,7 +51761,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Element;
 
-},{"./core/guid":353,"./core/util":357,"./mixin/Animatable":384,"./mixin/Eventful":386,"./mixin/Transformable":387}],325:[function(require,module,exports){
+},{"./core/guid":354,"./core/util":358,"./mixin/Animatable":385,"./mixin/Eventful":387,"./mixin/Transformable":388}],326:[function(require,module,exports){
 'use strict';
 /**
  * Handler
@@ -51698,7 +52058,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Handler;
 
-},{"./core/util":357,"./mixin/Draggable":385,"./mixin/Eventful":386}],326:[function(require,module,exports){
+},{"./core/util":358,"./mixin/Draggable":386,"./mixin/Eventful":387}],327:[function(require,module,exports){
 /**
  * @module zrender/Layer
  * @author pissang(https://www.github.com/pissang)
@@ -51929,7 +52289,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Layer;
 
-},{"./config":334,"./core/util":357,"./graphic/Pattern":366,"./graphic/Style":368}],327:[function(require,module,exports){
+},{"./config":335,"./core/util":358,"./graphic/Pattern":367,"./graphic/Style":369}],328:[function(require,module,exports){
 'use strict';
 /**
  * Default canvas painter
@@ -52997,7 +53357,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = Painter;
 
 
-},{"./Layer":326,"./animation/requestAnimationFrame":333,"./config":334,"./core/BoundingRect":345,"./core/log":354,"./core/timsort":356,"./core/util":357,"./graphic/Image":363}],328:[function(require,module,exports){
+},{"./Layer":327,"./animation/requestAnimationFrame":334,"./config":335,"./core/BoundingRect":346,"./core/log":355,"./core/timsort":357,"./core/util":358,"./graphic/Image":364}],329:[function(require,module,exports){
 'use strict';
 /**
  * Storage内容仓库模块
@@ -53277,7 +53637,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = Storage;
 
 
-},{"./container/Group":344,"./core/env":351,"./core/timsort":356,"./core/util":357}],329:[function(require,module,exports){
+},{"./container/Group":345,"./core/env":352,"./core/timsort":357,"./core/util":358}],330:[function(require,module,exports){
 'use strict';
 /**
  * 动画主类, 调度和管理所有动画控制器
@@ -53533,7 +53893,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = Animation;
 
 
-},{"../core/event":352,"../core/util":357,"./Animator":330,"./requestAnimationFrame":333}],330:[function(require,module,exports){
+},{"../core/event":353,"../core/util":358,"./Animator":331,"./requestAnimationFrame":334}],331:[function(require,module,exports){
 /**
  * @module echarts/animation/Animator
  */
@@ -54165,7 +54525,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Animator;
 
-},{"../core/util":357,"../tool/color":388,"./Clip":331}],331:[function(require,module,exports){
+},{"../core/util":358,"../tool/color":389,"./Clip":332}],332:[function(require,module,exports){
 /**
  * 动画主控制器
  * @config target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
@@ -54273,7 +54633,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = Clip;
 
 
-},{"./easing":332}],332:[function(require,module,exports){
+},{"./easing":333}],333:[function(require,module,exports){
 /**
  * 缓动代码来自 https://github.com/sole/tween.js/blob/master/src/Tween.js
  * @see http://sole.github.io/tween.js/examples/03_graphs.html
@@ -54620,7 +54980,7 @@ if (typeof __DEV__ === 'undefined') {
 
 
 
-},{}],333:[function(require,module,exports){
+},{}],334:[function(require,module,exports){
 
 
     module.exports = (typeof window !== 'undefined' &&
@@ -54633,7 +54993,7 @@ if (typeof __DEV__ === 'undefined') {
                                 };
 
 
-},{}],334:[function(require,module,exports){
+},{}],335:[function(require,module,exports){
 
     var dpr = 1;
     // If in browser environment
@@ -54661,7 +55021,7 @@ if (typeof __DEV__ === 'undefined') {
 
 
 
-},{}],335:[function(require,module,exports){
+},{}],336:[function(require,module,exports){
 
 
     var normalizeRadian = require('./util').normalizeRadian;
@@ -54723,7 +55083,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{"./util":342}],336:[function(require,module,exports){
+},{"./util":343}],337:[function(require,module,exports){
 
 
     var curve = require('../core/curve');
@@ -54766,7 +55126,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{"../core/curve":350}],337:[function(require,module,exports){
+},{"../core/curve":351}],338:[function(require,module,exports){
 
     module.exports = {
         /**
@@ -54810,7 +55170,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{}],338:[function(require,module,exports){
+},{}],339:[function(require,module,exports){
 'use strict';
 
 
@@ -55212,7 +55572,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{"../core/PathProxy":348,"../core/curve":350,"./arc":335,"./cubic":336,"./line":337,"./quadratic":340,"./util":342,"./windingLine":343}],339:[function(require,module,exports){
+},{"../core/PathProxy":349,"../core/curve":351,"./arc":336,"./cubic":337,"./line":338,"./quadratic":341,"./util":343,"./windingLine":344}],340:[function(require,module,exports){
 
 
     var windingLine = require('./windingLine');
@@ -55251,7 +55611,7 @@ if (typeof __DEV__ === 'undefined') {
         contain: contain
     };
 
-},{"./windingLine":343}],340:[function(require,module,exports){
+},{"./windingLine":344}],341:[function(require,module,exports){
 
 
     var curve = require('../core/curve');
@@ -55292,7 +55652,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{"../core/curve":350}],341:[function(require,module,exports){
+},{"../core/curve":351}],342:[function(require,module,exports){
 
 
     var textWidthCache = {};
@@ -55569,7 +55929,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = textContain;
 
-},{"../core/BoundingRect":345,"../core/util":357}],342:[function(require,module,exports){
+},{"../core/BoundingRect":346,"../core/util":358}],343:[function(require,module,exports){
 
 
     var PI2 = Math.PI * 2;
@@ -55583,7 +55943,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{}],343:[function(require,module,exports){
+},{}],344:[function(require,module,exports){
 
     module.exports = function windingLine(x0, y0, x1, y1, x, y) {
         if ((y > y0 && y > y1) || (y < y0 && y < y1)) {
@@ -55606,7 +55966,7 @@ if (typeof __DEV__ === 'undefined') {
         return x_ > x ? dir : 0;
     };
 
-},{}],344:[function(require,module,exports){
+},{}],345:[function(require,module,exports){
 /**
  * Group是一个容器，可以插入子节点，Group的变换也会被应用到子节点上
  * @module zrender/graphic/Group
@@ -55924,7 +56284,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Group;
 
-},{"../Element":324,"../core/BoundingRect":345,"../core/util":357}],345:[function(require,module,exports){
+},{"../Element":325,"../core/BoundingRect":346,"../core/util":358}],346:[function(require,module,exports){
 'use strict';
 /**
  * @module echarts/core/BoundingRect
@@ -56124,7 +56484,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = BoundingRect;
 
-},{"./matrix":355,"./vector":358}],346:[function(require,module,exports){
+},{"./matrix":356,"./vector":359}],347:[function(require,module,exports){
 'use strict';
 /**
  * Only implements needed gestures for mobile.
@@ -56246,7 +56606,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = GestureMgr;
 
 
-},{"./event":352}],347:[function(require,module,exports){
+},{"./event":353}],348:[function(require,module,exports){
 // Simple LRU cache use doubly linked list
 // @module zrender/core/LRU
 
@@ -56417,7 +56777,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = LRU;
 
-},{}],348:[function(require,module,exports){
+},{}],349:[function(require,module,exports){
 'use strict';
 /**
  * Path 代理，可以在`buildPath`中用于替代`ctx`, 会保存每个path操作的命令到pathCommands属性中
@@ -57188,7 +57548,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = PathProxy;
 
-},{"../config":334,"./BoundingRect":345,"./bbox":349,"./curve":350,"./vector":358}],349:[function(require,module,exports){
+},{"../config":335,"./BoundingRect":346,"./bbox":350,"./curve":351,"./vector":359}],350:[function(require,module,exports){
 /**
  * @author Yi Shen(https://github.com/pissang)
  */
@@ -57420,7 +57780,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = bbox;
 
 
-},{"./curve":350,"./vector":358}],350:[function(require,module,exports){
+},{"./curve":351,"./vector":359}],351:[function(require,module,exports){
 'use strict';
 /**
  * 曲线辅助模块
@@ -57962,7 +58322,7 @@ if (typeof __DEV__ === 'undefined') {
         quadraticProjectPoint: quadraticProjectPoint
     };
 
-},{"./vector":358}],351:[function(require,module,exports){
+},{"./vector":359}],352:[function(require,module,exports){
 /**
  * echarts设备环境识别
  *
@@ -58092,7 +58452,7 @@ if (typeof __DEV__ === 'undefined') {
         };
     }
 
-},{}],352:[function(require,module,exports){
+},{}],353:[function(require,module,exports){
 'use strict';
 /**
  * 事件辅助类
@@ -58239,7 +58599,7 @@ if (typeof __DEV__ === 'undefined') {
     };
 
 
-},{"../mixin/Eventful":386,"./env":351}],353:[function(require,module,exports){
+},{"../mixin/Eventful":387,"./env":352}],354:[function(require,module,exports){
 /**
  * zrender: 生成唯一id
  *
@@ -58254,7 +58614,7 @@ if (typeof __DEV__ === 'undefined') {
     };
 
 
-},{}],354:[function(require,module,exports){
+},{}],355:[function(require,module,exports){
 
         var config = require('../config');
 
@@ -58288,7 +58648,7 @@ if (typeof __DEV__ === 'undefined') {
         */
     
 
-},{"../config":334}],355:[function(require,module,exports){
+},{"../config":335}],356:[function(require,module,exports){
 
     var ArrayCtor = typeof Float32Array === 'undefined'
         ? Array
@@ -58448,7 +58808,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = matrix;
 
 
-},{}],356:[function(require,module,exports){
+},{}],357:[function(require,module,exports){
 // https://github.com/mziccard/node-timsort
 
     var DEFAULT_MIN_MERGE = 32;
@@ -59125,7 +59485,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = sort;
 
-},{}],357:[function(require,module,exports){
+},{}],358:[function(require,module,exports){
 /**
  * @module zrender/core/util
  */
@@ -59655,7 +60015,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = util;
 
 
-},{}],358:[function(require,module,exports){
+},{}],359:[function(require,module,exports){
 
     var ArrayCtor = typeof Float32Array === 'undefined'
         ? Array
@@ -59937,7 +60297,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = vector;
 
 
-},{}],359:[function(require,module,exports){
+},{}],360:[function(require,module,exports){
 
 
     var eventTool = require('../core/event');
@@ -60317,7 +60677,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = HandlerDomProxy;
 
-},{"../core/GestureMgr":346,"../core/env":351,"../core/event":352,"../core/util":357,"../mixin/Eventful":386}],360:[function(require,module,exports){
+},{"../core/GestureMgr":347,"../core/env":352,"../core/event":353,"../core/util":358,"../mixin/Eventful":387}],361:[function(require,module,exports){
 // CompoundPath to improve performance
 
 
@@ -60372,7 +60732,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     });
 
-},{"./Path":365}],361:[function(require,module,exports){
+},{"./Path":366}],362:[function(require,module,exports){
 /**
  * 可绘制的图形基类
  * Base class of all displayable graphic objects
@@ -60642,7 +61002,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Displayable;
 
-},{"../Element":324,"../core/util":357,"./Style":368,"./mixin/RectText":374}],362:[function(require,module,exports){
+},{"../Element":325,"../core/util":358,"./Style":369,"./mixin/RectText":375}],363:[function(require,module,exports){
 
 
     /**
@@ -60669,7 +61029,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Gradient;
 
-},{}],363:[function(require,module,exports){
+},{}],364:[function(require,module,exports){
 /**
  * Image element
  * @module zrender/graphic/Image
@@ -60826,7 +61186,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = ZImage;
 
-},{"../core/BoundingRect":345,"../core/LRU":347,"../core/util":357,"./Displayable":361}],364:[function(require,module,exports){
+},{"../core/BoundingRect":346,"../core/LRU":348,"../core/util":358,"./Displayable":362}],365:[function(require,module,exports){
 'use strict';
 
 
@@ -60870,7 +61230,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = LinearGradient;
 
-},{"../core/util":357,"./Gradient":362}],365:[function(require,module,exports){
+},{"../core/util":358,"./Gradient":363}],366:[function(require,module,exports){
 /**
  * Path element
  * @module zrender/graphic/Path
@@ -61231,7 +61591,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Path;
 
-},{"../contain/path":338,"../core/PathProxy":348,"../core/util":357,"./Displayable":361,"./Pattern":366}],366:[function(require,module,exports){
+},{"../contain/path":339,"../core/PathProxy":349,"../core/util":358,"./Displayable":362,"./Pattern":367}],367:[function(require,module,exports){
 
 
     var Pattern = function (image, repeat) {
@@ -61250,7 +61610,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Pattern;
 
-},{}],367:[function(require,module,exports){
+},{}],368:[function(require,module,exports){
 'use strict';
 
 
@@ -61291,7 +61651,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = RadialGradient;
 
-},{"../core/util":357,"./Gradient":362}],368:[function(require,module,exports){
+},{"../core/util":358,"./Gradient":363}],369:[function(require,module,exports){
 /**
  * @module zrender/graphic/Style
  */
@@ -61609,7 +61969,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Style;
 
-},{}],369:[function(require,module,exports){
+},{}],370:[function(require,module,exports){
 /**
  * Text element
  * @module zrender/graphic/Text
@@ -61736,7 +62096,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Text;
 
-},{"../contain/text":341,"../core/util":357,"./Displayable":361}],370:[function(require,module,exports){
+},{"../contain/text":342,"../core/util":358,"./Displayable":362}],371:[function(require,module,exports){
 
 
     var smoothSpline = require('./smoothSpline');
@@ -61779,7 +62139,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{"./smoothBezier":372,"./smoothSpline":373}],371:[function(require,module,exports){
+},{"./smoothBezier":373,"./smoothSpline":374}],372:[function(require,module,exports){
 
 
     module.exports = {
@@ -61870,7 +62230,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{}],372:[function(require,module,exports){
+},{}],373:[function(require,module,exports){
 /**
  * 贝塞尔平滑曲线
  * @module zrender/shape/util/smoothBezier
@@ -61973,7 +62333,7 @@ if (typeof __DEV__ === 'undefined') {
     };
 
 
-},{"../../core/vector":358}],373:[function(require,module,exports){
+},{"../../core/vector":359}],374:[function(require,module,exports){
 /**
  * Catmull-Rom spline 插值折线
  * @module zrender/shape/util/smoothSpline
@@ -62045,7 +62405,7 @@ if (typeof __DEV__ === 'undefined') {
     };
 
 
-},{"../../core/vector":358}],374:[function(require,module,exports){
+},{"../../core/vector":359}],375:[function(require,module,exports){
 /**
  * Mixin for drawing text in a element bounding rect
  * @module zrender/mixin/RectText
@@ -62196,7 +62556,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = RectText;
 
-},{"../../contain/text":341,"../../core/BoundingRect":345}],375:[function(require,module,exports){
+},{"../../contain/text":342,"../../core/BoundingRect":346}],376:[function(require,module,exports){
 /**
  * 圆弧
  * @module zrender/graphic/shape/Arc
@@ -62246,7 +62606,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     });
 
-},{"../Path":365}],376:[function(require,module,exports){
+},{"../Path":366}],377:[function(require,module,exports){
 'use strict';
 /**
  * 贝塞尔曲线
@@ -62383,7 +62743,7 @@ if (typeof __DEV__ === 'undefined') {
     });
 
 
-},{"../../core/curve":350,"../../core/vector":358,"../Path":365}],377:[function(require,module,exports){
+},{"../../core/curve":351,"../../core/vector":359,"../Path":366}],378:[function(require,module,exports){
 'use strict';
 /**
  * 圆形
@@ -62416,7 +62776,7 @@ if (typeof __DEV__ === 'undefined') {
     });
 
 
-},{"../Path":365}],378:[function(require,module,exports){
+},{"../Path":366}],379:[function(require,module,exports){
 /**
  * 直线
  * @module zrender/graphic/shape/Line
@@ -62477,7 +62837,7 @@ if (typeof __DEV__ === 'undefined') {
     });
 
 
-},{"../Path":365}],379:[function(require,module,exports){
+},{"../Path":366}],380:[function(require,module,exports){
 /**
  * 多边形
  * @module zrender/shape/Polygon
@@ -62503,7 +62863,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     });
 
-},{"../Path":365,"../helper/poly":370}],380:[function(require,module,exports){
+},{"../Path":366,"../helper/poly":371}],381:[function(require,module,exports){
 /**
  * @module zrender/graphic/shape/Polyline
  */
@@ -62534,7 +62894,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     });
 
-},{"../Path":365,"../helper/poly":370}],381:[function(require,module,exports){
+},{"../Path":366,"../helper/poly":371}],382:[function(require,module,exports){
 /**
  * 矩形
  * @module zrender/graphic/shape/Rect
@@ -62578,7 +62938,7 @@ if (typeof __DEV__ === 'undefined') {
     });
 
 
-},{"../Path":365,"../helper/roundRect":371}],382:[function(require,module,exports){
+},{"../Path":366,"../helper/roundRect":372}],383:[function(require,module,exports){
 /**
  * 圆环
  * @module zrender/graphic/shape/Ring
@@ -62608,7 +62968,7 @@ if (typeof __DEV__ === 'undefined') {
     });
 
 
-},{"../Path":365}],383:[function(require,module,exports){
+},{"../Path":366}],384:[function(require,module,exports){
 /**
  * 扇形
  * @module zrender/graphic/shape/Sector
@@ -62723,7 +63083,7 @@ if (typeof __DEV__ === 'undefined') {
     });
 
 
-},{"../../core/env":351,"../Path":365}],384:[function(require,module,exports){
+},{"../../core/env":352,"../Path":366}],385:[function(require,module,exports){
 'use strict';
 /**
  * @module zrender/mixin/Animatable
@@ -62993,7 +63353,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Animatable;
 
-},{"../animation/Animator":330,"../core/log":354,"../core/util":357}],385:[function(require,module,exports){
+},{"../animation/Animator":331,"../core/log":355,"../core/util":358}],386:[function(require,module,exports){
 // TODO Draggable for group
 // FIXME Draggable on element which has parent rotation or scale
 
@@ -63077,7 +63437,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = Draggable;
 
-},{}],386:[function(require,module,exports){
+},{}],387:[function(require,module,exports){
 /**
  * 事件扩展
  * @module zrender/mixin/Eventful
@@ -63381,7 +63741,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = Eventful;
 
 
-},{}],387:[function(require,module,exports){
+},{}],388:[function(require,module,exports){
 'use strict';
 /**
  * 提供变换扩展
@@ -63633,7 +63993,7 @@ if (typeof __DEV__ === 'undefined') {
     module.exports = Transformable;
 
 
-},{"../core/matrix":355,"../core/vector":358}],388:[function(require,module,exports){
+},{"../core/matrix":356,"../core/vector":359}],389:[function(require,module,exports){
 /**
  * @module zrender/tool/color
  */
@@ -64112,7 +64472,7 @@ if (typeof __DEV__ === 'undefined') {
 
 
 
-},{}],389:[function(require,module,exports){
+},{}],390:[function(require,module,exports){
 
 
     var Path = require('../graphic/Path');
@@ -64516,7 +64876,7 @@ if (typeof __DEV__ === 'undefined') {
         }
     };
 
-},{"../core/PathProxy":348,"../core/matrix":355,"../graphic/Path":365,"./transformPath":390}],390:[function(require,module,exports){
+},{"../core/PathProxy":349,"../core/matrix":356,"../graphic/Path":366,"./transformPath":391}],391:[function(require,module,exports){
 
 
     var CMD = require('../core/PathProxy').CMD;
@@ -64613,7 +64973,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = transformPath;
 
-},{"../core/PathProxy":348,"../core/vector":358}],391:[function(require,module,exports){
+},{"../core/PathProxy":349,"../core/vector":359}],392:[function(require,module,exports){
 /**
  * VML Painter.
  *
@@ -64808,7 +65168,7 @@ if (typeof __DEV__ === 'undefined') {
 
     module.exports = VMLPainter;
 
-},{"../core/log":354,"./core":392}],392:[function(require,module,exports){
+},{"../core/log":355,"./core":393}],393:[function(require,module,exports){
 
 
 if (!require('../core/env').canvasSupported) {
@@ -64857,7 +65217,7 @@ if (!require('../core/env').canvasSupported) {
     };
 }
 
-},{"../core/env":351}],393:[function(require,module,exports){
+},{"../core/env":352}],394:[function(require,module,exports){
 // http://www.w3.org/TR/NOTE-VML
 // TODO Use proxy like svg instead of overwrite brush methods
 
@@ -65913,12 +66273,12 @@ if (!require('../core/env').canvasSupported) {
     };
 }
 
-},{"../contain/text":341,"../core/BoundingRect":345,"../core/PathProxy":348,"../core/env":351,"../core/vector":358,"../graphic/Displayable":361,"../graphic/Gradient":362,"../graphic/Image":363,"../graphic/Path":365,"../graphic/Text":369,"../graphic/mixin/RectText":374,"../tool/color":388,"./core":392}],394:[function(require,module,exports){
+},{"../contain/text":342,"../core/BoundingRect":346,"../core/PathProxy":349,"../core/env":352,"../core/vector":359,"../graphic/Displayable":362,"../graphic/Gradient":363,"../graphic/Image":364,"../graphic/Path":366,"../graphic/Text":370,"../graphic/mixin/RectText":375,"../tool/color":389,"./core":393}],395:[function(require,module,exports){
 
     require('./graphic');
     require('../zrender').registerPainter('vml', require('./Painter'));
 
-},{"../zrender":395,"./Painter":391,"./graphic":393}],395:[function(require,module,exports){
+},{"../zrender":396,"./Painter":392,"./graphic":394}],396:[function(require,module,exports){
 /*!
  * ZRender, a high performance 2d drawing library.
  *
@@ -66344,342 +66704,4 @@ if (!require('../core/env').canvasSupported) {
     module.exports = zrender;
 
 
-},{"./Handler":325,"./Painter":327,"./Storage":328,"./animation/Animation":329,"./core/env":351,"./core/guid":353,"./core/util":357,"./dom/HandlerProxy":359}],396:[function(require,module,exports){
-var echarts = require('echarts');
-require('./shine.js');
-var topics = require('./mock.json');
-
-// 基于准备好的dom，初始化echarts实例
-var myChart = echarts.init(document.getElementById('main'), 'shine');
-
-var option = {
-    title : {
-        text: '人物关系：乔布斯',
-        subtext: '数据来自人立方',
-        x:'right',
-        y:'bottom'
-    },
-    tooltip : {
-        trigger: 'item',
-        formatter: '{a} : {b}'
-    },
-    toolbox: {
-        show : true,
-        feature : {
-            restore : {show: true},
-            magicType: {show: true, type: ['force', 'chord']},
-            saveAsImage : {show: true}
-        }
-    },
-    series : [
-        {
-            type:'graph',
-            layout: 'force',
-            name : "人物关系",
-            draggable: true,
-            hoverAnimation: true,
-            focusNodeAdjacency: true,
-            categories : [
-                {
-                    name: 'blue',
-                    itemStyle: {
-                        normal: {
-                            color: "#4285F4"
-                        },
-                        emphasis: {
-                            borderColor: 'rgba(66, 133, 244, 0.6)',
-                            borderWidth: 3,
-                            borderType: "solid",
-                            shadowColor: 'rgba(66, 133, 244, 0.9)',
-                            shadowBlur: 10
-                        }
-                    }
-                },
-                {
-                    name: '家人'
-                },
-                {
-                    name:'朋友'
-                }
-            ],
-            legendHoverLink: true,
-            force: {
-                edgeLength: [200, 300],
-                gravity: 1.1
-            },
-            symbolSize: 50,
-            itemStyle: {
-                normal: {
-
-                },
-                emphasis: {
-                    label: {
-                        // textStyle: null      // 默认使用全局文本样式，详见TEXTSTYLE
-                    },
-                    nodeStyle : {
-                        r: 100
-                    },
-                    linkStyle : {}
-                }
-            },
-            lineStyle: {
-                normal: {
-                    curveness: 0
-                },
-                emphasis: {
-                    curveneww: 0
-                }
-            },
-            label: {
-                normal: {
-                    show: true,
-                    textStyle: {
-                        color: '#333'
-                    }
-                },
-                emphasis: {
-                    show: true
-                }
-            },
-            minRadius : 50,
-            maxRadius : 80,
-
-            scaling: 1.1,
-            roam: 'move',
-            nodes:[
-                {category:0, name: '乔布斯', value : 10, symbolSize: 200, label: '乔布斯\n（主要）'},
-                {category:1, name: '丽萨-乔布斯', symbolSize: 60, value : 2},
-                {category:1, name: '保罗-乔布斯', symbolSize: 50, value : 3},
-                {category:1, name: '克拉拉-乔布斯',value : 3},
-                {category:1, name: '劳伦-鲍威尔',value : 7},
-                {category:2, name: '史蒂夫-沃兹尼艾克',value : 5},
-                {category:2, name: '奥巴马',value : 8},
-                {category:2, name: '比尔-盖茨',value : 9},
-                {category:2, name: '乔纳森-艾夫',value : 4},
-                {category:2, name: '蒂姆-库克',value : 4},
-                {category:2, name: '龙-韦恩',value : 1},
-            ],
-            links : [
-                {source : '丽萨-乔布斯', target : '乔布斯', value : 1, name: '女儿'},
-                {source : '保罗-乔布斯', target : '乔布斯', value : 2, name: '父亲'},
-                {source : '克拉拉-乔布斯', target : '乔布斯', value : 1, name: '母亲'},
-                {source : '劳伦-鲍威尔', target : '乔布斯', value : 2},
-                {source : '史蒂夫-沃兹尼艾克', target : '乔布斯', value : 3, name: '合伙人'},
-                {source : '奥巴马', target : '乔布斯', value : 1},
-                {source : '比尔-盖茨', target : '乔布斯', value : 6, name: '竞争对手'},
-                {source : '乔纳森-艾夫', target : '乔布斯', value : 1, name: '爱将'},
-                {source : '蒂姆-库克', target : '乔布斯', value : 1},
-                {source : '龙-韦恩', target : '乔布斯', value : 1},
-                {source : '克拉拉-乔布斯', target : '保罗-乔布斯', value : 1},
-                {source : '奥巴马', target : '保罗-乔布斯', value : 1},
-                {source : '奥巴马', target : '克拉拉-乔布斯', value : 1},
-                {source : '奥巴马', target : '劳伦-鲍威尔', value : 1},
-                {source : '奥巴马', target : '史蒂夫-沃兹尼艾克', value : 1},
-                {source : '比尔-盖茨', target : '奥巴马', value : 6},
-                {source : '比尔-盖茨', target : '克拉拉-乔布斯', value : 1},
-                {source : '蒂姆-库克', target : '保罗-乔布斯', value : 1}
-            ],
-            animationDuration: 20000
-        }
-    ]
-};
-
-myChart.setOption(option);
-
-//var ecConfig = require('echarts/config');
-function focus(param) {
-    var data = param.data;
-    var links = option.series[0].links;
-    var nodes = option.series[0].nodes;
-    if (
-        data.source !== undefined
-        && data.target !== undefined
-    ) { //点击的是边
-        var sourceNode = nodes.filter(function (n) {return n.name == data.source})[0];
-        var targetNode = nodes.filter(function (n) {return n.name == data.target})[0];
-        console.log("选中了边 " + sourceNode.name + ' -> ' + targetNode.name + ' (' + data.weight + ')');
-    } else { // 点击的是点
-        console.log("选中了" + data.name + '(' + data.value + ')');
-    }
-}
-myChart.on('click', focus)
-
-// myChart.on(ecConfig.EVENT.FORCE_LAYOUT_END, function () {
-//     console.log(myChart.chart.force.getPosition());
-// });
-
-
-                    
-// // 绘制图表
-// myChart.setOption({
-//     title: { text: 'ECharts 入门示例' },
-//     tooltip: {},
-//     xAxis: {
-//         data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
-//     },
-//     yAxis: {},
-//     series: [{
-//         name: '销量',
-//         type: 'bar',
-//         data: [5, 20, 36, 10, 10, 20]
-//     }]
-// });
-},{"./mock.json":1,"./shine.js":397,"echarts":2}],397:[function(require,module,exports){
-(function (root, factory) {if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define(['exports', 'echarts'], factory);
-    } else if (typeof exports === 'object' && typeof exports.nodeName !== 'string') {
-        // CommonJS
-        factory(exports, require('echarts'));
-    } else {
-        // Browser globals
-        factory({}, root.echarts);
-    }
-}(this, function (exports, echarts) {
-    var log = function (msg) {
-        if (typeof console !== 'undefined') {
-            console && console.error && console.error(msg);
-        }
-    };
-    if (!echarts) {
-        log('ECharts is not Loaded');
-        return;
-    }
-
-    var colorPalette = [
-        '#c12e34','#e6b600','#0098d9','#2b821d',
-        '#005eaa','#339ca8','#cda819','#32a487'
-    ];
-
-    var theme = {
-
-        color: colorPalette,
-
-        title: {
-            textStyle: {
-                fontWeight: 'normal'
-            }
-        },
-
-        visualMap: {
-            color:['#1790cf','#a2d4e6']
-        },
-
-        toolbox: {
-            iconStyle: {
-                normal: {
-                    borderColor: '#06467c'
-                }
-            }
-        },
-
-        tooltip: {
-            backgroundColor: 'rgba(0,0,0,0.6)'
-        },
-
-        dataZoom: {
-            dataBackgroundColor: '#dedede',
-            fillerColor: 'rgba(154,217,247,0.2)',
-            handleColor: '#005eaa'
-        },
-
-        timeline: {
-            lineStyle: {
-                color: '#005eaa'
-            },
-            controlStyle: {
-                normal: {
-                    color: '#005eaa',
-                    borderColor: '#005eaa'
-                }
-            }
-        },
-
-        candlestick: {
-            itemStyle: {
-                normal: {
-                    color: '#c12e34',
-                    color0: '#2b821d',
-                    lineStyle: {
-                        width: 1,
-                        color: '#c12e34',
-                        color0: '#2b821d'
-                    }
-                }
-            }
-        },
-
-        graph: {
-            color: colorPalette
-        },
-
-        map: {
-            label: {
-                normal: {
-                    textStyle: {
-                        color: '#c12e34'
-                    }
-                },
-                emphasis: {
-                    textStyle: {
-                        color: '#c12e34'
-                    }
-                }
-            },
-            itemStyle: {
-                normal: {
-                    borderColor: '#eee',
-                    areaColor: '#ddd'
-                },
-                emphasis: {
-                    areaColor: '#e6b600'
-                }
-            }
-        },
-
-        gauge: {
-            axisLine: {
-                show: true,
-                lineStyle: {
-                    color: [[0.2, '#2b821d'],[0.8, '#005eaa'],[1, '#c12e34']],
-                    width: 5
-                }
-            },
-            axisTick: {
-                splitNumber: 10,
-                length:8,
-                lineStyle: {
-                    color: 'auto'
-                }
-            },
-            axisLabel: {
-                textStyle: {
-                    color: 'auto'
-                }
-            },
-            splitLine: {
-                length: 12,
-                lineStyle: {
-                    color: 'auto'
-                }
-            },
-            pointer: {
-                length: '90%',
-                width: 3,
-                color: 'auto'
-            },
-            title: {
-                textStyle: {
-                    color: '#333'
-                }
-            },
-            detail: {
-                textStyle: {
-                    color: 'auto'
-                }
-            }
-        }
-    };
-    echarts.registerTheme('shine', theme);
-}));
-},{"echarts":2}]},{},[396]);
+},{"./Handler":326,"./Painter":328,"./Storage":329,"./animation/Animation":330,"./core/env":352,"./core/guid":354,"./core/util":358,"./dom/HandlerProxy":360}]},{},[1]);

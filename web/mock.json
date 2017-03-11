@@ -1,0 +1,46 @@
+{
+    "SelfList": {
+        "Android": 3,
+        "web": 2,
+        "js": 0.6,
+        "java": 0.8,
+        "iphone": 0.5,
+        "linux": 0.2
+    },
+    "EdgeWeight": {
+        "Android": {
+            "Android": 1,
+            "web": 0.5,
+            "iphone": 0.9,
+            "linux": 0.6,
+            "java": 0.7
+        },
+        "web": {
+            "web": 1,
+            "Android": 0.5,
+            "iphone": 0.4,
+            "linux": 0.7,
+            "js": 0.9
+        },
+        "iphone": {
+            "iphone": 1,
+            "Android": 0.9,
+            "web": 0.4,
+            "linux": 0.8
+        },
+        "linux": {
+            "linux": 1,
+            "Android": 0.6,
+            "web": 0.7,
+            "iphone": 0.8
+        },
+        "js": {
+            "java": 0.1,
+            "linux": 0.1,
+            "web": 0.9
+        }
+        
+    }
+
+
+}
