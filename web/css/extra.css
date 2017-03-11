@@ -1,0 +1,23 @@
+@font-face {
+    font-family: 'CS-Benwood';
+    src: url(../fonts/CS-Benwood.otf) format('truetype');
+}
+
+
+.welcome{
+	width: 100%;
+	height: 100%;
+	background-color: #182b3d;
+}
+
+.android-header{
+	background-color: #182b3d;
+}
+
+.android-title{
+	font-family: 'CS-Benwood';
+	font-size: 30px;
+	font-weight: bold;
+	height: 60px;
+	line-height: 68px;
+}
