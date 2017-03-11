@@ -259,7 +259,7 @@ function updateForceGraph(topic) {
                 for (var topic in topics["SelfList"]) {
                     var obj = {
                         category: tempCount % 5,
-                        name: Object.keys(topics["SelfList"][topic])[0],
+                        name: topics["SelfList"][topic],
                         // symbolSize: standardSize * hotList[topic] / hotList[maxHot]
                         symbolSize: standardSize - tempCount * 3
                     }
