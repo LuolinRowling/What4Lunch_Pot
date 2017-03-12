@@ -215,7 +215,7 @@ function updateForceGraphForTopic(topic) {
     }
     $.ajax({
         type: 'POST',
-        url: 'http://jiangdongyu.space:3333/topicTOtopic',
+        url: 'http://jiangdongyu.space:4000/topicTOtopic',
         data: data,
         dataType: 'json',
         success: function(data){
@@ -304,7 +304,7 @@ function updateForceGraphForPerson(topic) {
     }
     $.ajax({
         type: 'POST',
-        url: 'http://jiangdongyu.space:3333/topicUser',
+        url: 'http://jiangdongyu.space:4000/topicUser',
         data: data,
         dataType: 'json',
         success: function(data){

@@ -36,10 +36,10 @@
                 that.resize()
                 that._initMouseHandling()
 
-                if (document.referrer.match(/echolalia|atlas|halfviz/)) {
+                if (document.referrer.match(/Developers|Google|Hacker/)) {
                     // if we got here by hitting the back button in one of the demos, 
                     // start with the demos section pre-selected
-                    that.switchSection('demos')
+                    that.switchSection('DanBC')
                 }
             },
             resize: function() {
@@ -160,7 +160,7 @@
                                 dom.removeClass('linkable')
                                 window.status = ''
                             }
-                        } else if ($.inArray(nearest.node.name, ['arbor.js', 'code', 'docs', 'demos']) >= 0) {
+                        } else if ($.inArray(nearest.node.name, ['arbor.js', 'wmf', 'sp332', 'DanBC']) >= 0) {
                             if (nearest.node.name != _section) {
                                 _section = nearest.node.name
                                 that.switchSection(_section)
@@ -366,44 +366,103 @@
             doc: "#922E00",
             demo: "#a7af00"
         }
+        
+        // $.ajax({
+        // type: 'POST',
+        // url: 'http://jiangdongyu.space:4000/userTOuser',
+        // dataType: 'json',
+        // success: function(data){
+
+        //         var theUI = {};
+        //         theUI.nodes = {};
+
+        //         var userArr = data.userClose,
+        //             commentArr = data.comments,
+        //             topicArr = data.topics;
+
+        //         for (var index in userArr) {
+        //             if (index == 0) {
+        //                 var obj = {
+        //                     color: CLR.red,
+        //                     shape: "dot",
+        //                     alpha: 1
+        //                 }
+        //                 theUI.nodes[userArr[index]] = obj;
+        //             } else {
+        //                 var obj = {
+        //                     color: CLR.yellow, 
+        //                     shape: "dot", 
+        //                     alpha: 1
+        //                 }
+        //                 theUI.nodes[userArr[index]] = obj;
+        //             }
+        //         }
+
+        //         for (var i = 0; i < 9; i++) {
+        //             var obj = {
+        //                 color: CLR.purple,
+        //                 alpha: 0
+        //             }
+        //             theUI.nodes[topicArr[i]] = obj;
+        //         }
+
+        //         theUI.edges = {};
+
+        //         for (var index in userArr) {
+
+        //         }
+
+        //         for (var index in userArr) {
+        //             if (index == 0) continue;
+        //             var obj = {};
+        //             for (var i = 0; i < 3; i++) {
+        //                 obj[topicArr[(index-1)*3+i]] = {}
+        //             }
+        //             theUI.edges[userArr[index]] = obj;
+        //         }
+                
+        //         console.log(theUI);
+        //     }
+        // });
+        
 
         var theUI = {
             nodes: {
-                "arbor.js": { color: CLR.red, shape: "dot", alpha: 1 },
+                tptacek: { color: CLR.red, shape: "dot", alpha: 1 },
 
-                demos: { color: CLR.yellow, shape: "dot", alpha: 1 },
-                halfviz: { color: CLR.purple, alpha: 0, link: '/halfviz' },
-                atlas: { color: CLR.purple, alpha: 0, link: '/atlas' },
-                echolalia: { color: CLR.purple, alpha: 0, link: '/echolalia' },
+                DanBC: { color: CLR.yellow, shape: "dot", alpha: 1 },
+                Hacker: { color: CLR.purple, alpha: 0, link: "#reference?name=DanBC&topic=Hacker" },
+                Google: { color: CLR.purple, alpha: 0, link: "#reference?name=DanBC&topic=Google" },
+                Developers: { color: CLR.purple, alpha: 0, link: "#reference?name=name=DanBC&topic=Developers" },
 
-                docs: { color: CLR.yellow, shape: "dot", alpha: 1 },
-                reference: { color: CLR.green, alpha: 0, link: "#reference?name="+CLR.code+"&topic="+CLR.code },
-                introduction: { color: CLR.green, alpha: 0, link: '#introduction' },
+                sp332: { color: CLR.yellow, shape: "dot", alpha: 1 },
+                Docker: { color: CLR.green, alpha: 0, link: "#reference?name=sp332&topic=Docker" },
+                Hadoop: { color: CLR.green, alpha: 0, link: "#reference?name=sp332&topic=Hadoop"},
 
-                code: { color: CLR.yellow, shape: "dot", alpha: 1 },
-                github: { color: CLR.blue, alpha: 0, link: 'https://github.com/samizdatco/arbor' },
-                ".zip": { color: CLR.blue, alpha: 0, link: '/js/dist/arbor-v0.92.zip' },
-                ".tar.gz": { color: CLR.blue, alpha: 0, link: '/js/dist/arbor-v0.92.tar.gz' }
+                wmf: { color: CLR.yellow, shape: "dot", alpha: 1 },
+                Mysql: { color: CLR.blue, alpha: 0, link: "#reference?name=wmf&topic=Mysql" },
+                Mongodb: { color: CLR.blue, alpha: 0, link: "#reference?name=wmf&topic=Mongodb"  },
+                Github: { color: CLR.blue, alpha: 0, link: "#reference?name=wmf&topic=Github" }
             },
             edges: {
-                "arbor.js": {
-                    demos: { length: .8 },
-                    docs: { length: .8},
-                    code: { length: .8 }
+                tptacek: {
+                    DanBC: { length: .8 },
+                    sp332: { length: .8},
+                    wmf: { length: .8 }
                 },
-                demos: {
-                    halfviz: {},
-                    atlas: {},
-                    echolalia: {}
+                DanBC: {
+                    Hacker: {},
+                    Google: {},
+                    Developers: {}
                 },
-                docs: {
-                    reference: {},
-                    introduction: {}
+                sp332: {
+                    Docker: {},
+                    Hadoop: {}
                 },
-                code: {
-                    ".zip": {},
-                    ".tar.gz": {},
-                    "github": {}
+                wmf: {
+                    Mysql: {},
+                    Mongodb: {},
+                    Github: {}
                 }
             }
         }

@@ -127,7 +127,7 @@
         var CLR = ["#F24B4B", "#F8BB44", "#8C4B7E", "#60BFBF", "#244F75"];
         var speed = [37, 43, 64, 23, 66, 96, 73, 105, 11, 2];
 
-        var textArr = ["lll", "2222333", "ssss", "nihaobang", "wozuimei"];
+        var textArr = ["Google video search works in this way too.", "Google docs is amazing.", "Google Docs already have revision controls.", "Socialcast, Campfire, and Google Docs.", "Google Docs is HIPAA compliant?","Trello + Google Docs Works like a champ."];
         var danmuss = {};
         for (var i = 0; i < speed.length; i++) {
             danmuss[speed[i]] = [];
@@ -143,47 +143,11 @@
                 "time": i * 10
             });
         };
-        /*
-        var danmuss = { speedRand:[]}
-        var danmuss = {
-            : [{
-                "text": "hahahaha",
-                "color": "red",
-                "size": "0",
-                "position": "0"
-            }, {
-                "text": "233333",
-                "color": "red",
-                "size": "0",
-                "position": "0"
-            }, {
-                "text": "455555",
-                "color": "red",
-                "size": "0",
-                "position": "0"
-            }],
-            3: [{
-                "text": "poi",
-                "color": "red",
-                "size": "1",
-                "position": "0"
-            }, {
-                "text": "2333",
-                "color": "#FFFFFF",
-                "size": "0",
-                "position": "0"
-            }],
-            50: [{
-                "text": "XXX真好",
-                "color": "#FFFFFF",
-                "size": "0",
-                "position": "2"
-            }, ]
-        };*/
+
         $("#danmu").danmu({
             left: 0, //区域的起始位置x坐标 
-            top: 490, //区域的起始位置y坐标 
-            height: 200, //区域的高度  
+            top: 500, //区域的起始位置y坐标 
+            height: 220, //区域的高度  
             width: document.body.clientWidth,
             zindex: 1003, //div的css样式zindex 
             speed: 20000, //弹幕速度，飞过区域的毫秒数  
@@ -191,7 +155,7 @@
             danmuss: danmuss, //danmuss对象，运行时的弹幕内容  
             default_font_color: "#000", //弹幕默认字体颜色  
             font_size_small: 30, //小号弹幕的字体大小,注意此属性值只能是整数 
-            font_size_big: 40, //大号弹幕的字体大小  
+            font_size_big: 35, //大号弹幕的字体大小  
             opacity: "0.9", //弹幕默认透明度  
             top_botton_danmu_time: 6000 //顶端底端弹幕持续时间  
         });
