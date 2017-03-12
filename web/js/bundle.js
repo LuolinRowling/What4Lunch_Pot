@@ -20,7 +20,7 @@ $('.mdl-navigation__link').on('click',function(){
 var option = {
     tooltip : {
         trigger: 'item',
-        formatter: '{a} : {b}'
+        formatter: '{b}'
     },
     toolbox: {
         show : true,
