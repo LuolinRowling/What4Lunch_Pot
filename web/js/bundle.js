@@ -118,8 +118,8 @@ var option = {
             ],
             legendHoverLink: true,
             force: {
-                repulsion: 200,
-                edgeLength: [150, 400],
+                repulsion:200,
+                edgeLength: [300, 500],
                 gravity: 0.1,
                 layoutAnimation: true
             },
@@ -193,7 +193,7 @@ var option = {
     },
     animationDelayUpdate: function (idx) {
         return idx * 15;
-    },
+    }
 };
 
 $(document).ready(function(){
@@ -257,6 +257,8 @@ function updateForceGraphForTopic(topic) {
                 for (firstTopic in weightList) {
                     for (secondTopic in weightList[firstTopic]) {
                         if (firstTopic == secondTopic) continue;
+
+                        if (weightList[firstTopic][secondTopic] < 0.81) continue;
                         var obj = {
                             source: firstTopic,
                             target: secondTopic,
@@ -267,6 +269,9 @@ function updateForceGraphForTopic(topic) {
                 }
 
                 // console.log(link);
+                option.title = {
+                    show: false
+                }
                 option.series[0].nodes = nodes;
                 option.series[0].links = links;
                 // console.log(option.series)
@@ -297,6 +302,21 @@ function focus(param) {
         console.log(data.name);
         updateForceGraphForPerson(data.name);
     }
+}
+
+function searchPerson(param) {
+     var data = param.data;
+    var links = option.series[0].links;
+    var nodes = option.series[0].nodes;
+    if (
+        data.source !== undefined
+        && data.target !== undefined
+    ) { //点击的是边
+
+    } else { // 点击的是点
+        console.log(data.name);
+        window.open('https://news.ycombinator.com/threads?id=' + data.name, '', '' , false);
+    }  
 }
 
 function updateForceGraphForPerson(topic) {
@@ -337,6 +357,9 @@ function updateForceGraphForPerson(topic) {
             for (firstPerson in weightList) {
                 for (secondPerson in weightList[firstPerson]) {
                     if (firstPerson == secondPerson) continue;
+                    
+                    if (weightList[firstPerson][secondPerson] < 0.98) continue;
+
                     var obj = {
                         source: firstPerson,
                         target: secondPerson,
@@ -350,7 +373,7 @@ function updateForceGraphForPerson(topic) {
             
             option.title = {
                 show: true,
-                text: "Hot users in topic : " + data.name,
+                text: "Hot users in topic : " + topic,
                 textAlign: "center",
                 textBaseline: "top",
                 left: "15%",
@@ -363,6 +386,8 @@ function updateForceGraphForPerson(topic) {
             option.series[0].links = links;
             // console.log(option.series)
             myChart.setOption(option);
+
+            myChart.on('click', searchPerson);
         },
         error: function(xhr, type) {
             console.log(xhr);
